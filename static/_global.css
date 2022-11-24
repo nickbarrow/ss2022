@@ -264,6 +264,7 @@ Forms
     margin-bottom: 20px;
     padding: 8px 12px;
     transition: .25s;
+    width: 100%;
 }
 
 .FormFieldInput:focus {

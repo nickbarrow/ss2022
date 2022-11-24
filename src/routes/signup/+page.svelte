@@ -1,6 +1,6 @@
 <script>
     import { enhance } from "$app/forms";
-
+    import Header from "$lib/components/Header.svelte"
 
 	export let form;
 </script>
@@ -9,13 +9,8 @@
 	<title>🎅🏼 SS22 - Sign Up</title>
 </svelte:head>
 
-<!-- <h2 class="PageHeader">Sign Up</h2> -->
-<header class="Header">
-	<div class="HeaderInner">
-		<h1 class="HeaderTitle">Sign Up</h1>
-		<p class="HeaderSubtitle">Sign up with email and password.</p>
-	</div>
-</header>
+
+<Header title={"Sign Up"} subtitle={"Sign up with email and password."} />
 
 <div class="Page PageWithHeader">
 	<div class="Card">	
