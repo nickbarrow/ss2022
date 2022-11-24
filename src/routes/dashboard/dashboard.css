@@ -1,0 +1,104 @@
+.Groups {
+    padding: 0;
+}
+
+.GroupSearchForm {
+    border-bottom: 1px solid #EAEDF1;
+}
+
+.GroupSearchInput {
+    border: none;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    font-family: var(--SecondaryFont);
+    font-size: 14px;
+    font-weight: 300;
+    height: 40px;
+    padding: 4px 10px 4px 40px;
+    transition: .25s;
+}
+
+.GroupSearchInput::placeholder {
+    color: rgb(127, 140, 159);
+}
+
+.GroupSearchInput:focus {
+    color: rgb(74, 85, 104);
+    outline: none;
+}
+
+.FormFieldIcon path {
+    fill: rgb(127, 140, 159);
+    transition: .25s;
+}
+
+.GroupSearchInput:focus~.FormFieldIcon path {
+    fill: rgb(74, 85, 104);
+}
+
+.YourGroups {
+    /* border-bottom: 1px solid #EAEDF1; */
+}
+
+.GroupTitle {
+    color: rgb(100, 116, 139);
+    font-family: var(--SecondaryFont);
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.GroupList {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.GroupListItem {
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 6px 8px;
+    /* transition: .25s; */
+}
+
+.GroupListItem:hover {
+    background-color: var(--PrimaryColor);
+    color: #ffffff;
+}
+
+.GroupListItemIcon {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+.GroupListItemIcon path {
+    fill: rgb(127, 140, 159);
+}
+
+.GroupListItem:hover .GroupListItemIcon path {
+    fill: #FFFFFF;
+}
+
+.GroupListItemText {
+    color: rgb(51, 65, 85);
+    font-family: var(--SecondaryFont);
+    font-size: 14px;
+    margin-top: 2px;
+}
+
+.GroupListItem:hover .GroupListItemText {
+    color: #FFFFFF;
+}
+
+.CreateGroup {
+    padding: 12px 14px;
+}
+
+.CreateGroupButton {
+    background-color: transparent;
+    border: none;
+    width: 100%;
+}

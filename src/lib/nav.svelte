@@ -4,7 +4,7 @@
 	import { signOut } from 'firebase/auth';
 	import { auth } from '../firebase';
 	import { goto } from '$app/navigation';
-	let { session } = getStores();
+	// let { session } = getStores();
 
 
 	async function logOut() {
@@ -15,14 +15,14 @@
 
 <nav>
 	<h2>
-		{#if $session['user'] != null}
+		<!-- {#if $session['user'] != null}
 			<Link class="link" size="lg" href="/admin">Let's Create</Link>
 		{:else}
 			<Link class="link" size="lg" href="/">Bloggy</Link>
-		{/if}
+		{/if} -->
 	</h2>
 	<ul>
-		{#if $session['user'] != null}
+		<!-- {#if $session['user'] != null}
 		
 			<li>
 				<Button kind="danger" on:click={logOut}>Log Out</Button>
@@ -31,14 +31,14 @@
 				<Link href="/admin/create-blog">Create a new post</Link>
 			</li>
 			
-		{:else}
+		{:else} -->
 			<li>
 				<Link href="/auth/login">Login</Link>
 			</li>
 			<li>
-				<Link href="/auth/register">Sign Up</Link>
+				<Link href="/signup">Sign Up</Link>
 			</li>
-		{/if}
+		<!-- {/if} -->
 	</ul>
 </nav>
 
