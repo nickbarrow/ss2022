@@ -45,9 +45,8 @@
 
 
 <style>
-	.SignupFormContainer {
-		display: grid;
-		place-content: center;
+	p {
+		font-size: 14px;
 	}
 
 	.SignupForm {

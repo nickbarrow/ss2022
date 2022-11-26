@@ -14,7 +14,7 @@
             <h1 class="HeroTitle">Secret Santa 2022🎅🏼</h1>
             <p class="HeroSubtitle">What's the best gift you can give for $20?</p>
             <div class="HeroButtons">
-                <a class="Button ButtonLarge" href="/signup">Sign Up</a>
+                <!-- <a class="Button ButtonLarge" href="/signup">Sign Up</a> -->
                 <a class="Button  ButtonLarge ButtonSecondary" href="/login">Log In</a>
             </div>
         </div>

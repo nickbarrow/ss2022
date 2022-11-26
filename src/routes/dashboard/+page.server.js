@@ -1,6 +1,6 @@
 import { redirect, invalid } from "@sveltejs/kit";
 import { auth, groupsRef, db } from "../../lib/server/firebase";
-import { getDocs, collection, query, where, addDoc, getCountFromServer } from "firebase/firestore";
+import { getDocs, collection, query, where, addDoc, getCountFromServer, updateDoc, doc } from "firebase/firestore";
 
 export async function load({ params }) {
     if (!auth.currentUser) throw redirect(300, '/login');
@@ -27,26 +27,32 @@ export const actions = {
 
         let groupsSnapshot = await getDocs(groupsRef), groups = [];
         groupsSnapshot.forEach(snapshot => {
-            groups.push(snapshot.data());
+            groups.push({
+                id: snapshot.id,
+                ...snapshot.data()
+            });
         });
-        groups = groups.filter((group) => group.Name.toLowerCase().includes(GroupName) );
+
+        if (GroupName) groups = groups.filter((group) => group.Name.toLowerCase().includes(GroupName) );
 
         return {
             groups
         }
     },
     createGroup: async ({ request }) => {
-        const data = await request.formData();
-        const GroupName = data.get('GroupName');
-        const SecretCode = data.get('SecretCode');
+        const data = await request.formData(),
+            GroupName = data.get('GroupName'),
+            SecretCode = data.get('SecretCode'),
+            Wishlist = data.get('Wishlist');
 
         if (!GroupName) return invalid(400, { GroupName: { empty: true } });
-        if (!SecretCode) return invalid(400, { SecretCode: { empty: true } });
+        // if (!SecretCode) return invalid(400, { SecretCode: { empty: true } });
 
-        const nameCheckQuery = query(groupsRef, where('Name', '==', GroupName));
-        const nameCheckSnapshot = await getCountFromServer(nameCheckQuery);
-        const nameCheckCount = nameCheckSnapshot.data().count; // if check query fails fallback to 1 to fail submit
-        console.log("name check: ", nameCheckCount);
+        const nameCheckQuery = query(groupsRef, where('Name', '==', GroupName)),
+            nameCheckSnapshot = await getCountFromServer(nameCheckQuery),
+            nameCheckCount = nameCheckSnapshot.data().count;
+
+        // console.log("name check: ", nameCheckCount);
         if (nameCheckCount != 0) {
             return invalid(400, { GroupName: { taken: true } });
         }
@@ -55,7 +61,12 @@ export const actions = {
             Name: GroupName,
             Owner: auth.currentUser.uid,
             SecretCode: SecretCode,
-            Members: [auth.currentUser.uid]
+            Members: [{
+                uid: auth.currentUser.uid,
+                displayName: auth.currentUser.displayName,
+                photoURL: auth.currentUser.photoURL,
+                wishlist: Wishlist
+            }]
         });
         
         throw redirect(300, `/groups/${groupRef.id}`);

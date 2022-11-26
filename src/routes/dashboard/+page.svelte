@@ -1,20 +1,22 @@
 <script>
     import { enhance } from "$app/forms";
-    import "./dashboard.css";
     import Header from "$lib/components/Header.svelte"
+    import "./dashboard.css";
+
     export let data;
+    export let groups = data.groups;
     export let form;
     export let hideGroups = false;
     export let hideCreateForm = true;
-    export let hideSearchResults = true;
+    // export let hideSearchResults = true;
     export let yourGroups = data?.groups?.filter(group => group.Members.includes(data.user.uid)) || [];
+    export let searchResults = false;
 
     const groupSearchHandler = async ({ form, data, action, cancel }) => {
         return async ({ result, update }) => {
-            // console.log(result);
             if (result.data.groups) {
-                console.log('we got a live one(s)');
-                hideSearchResults = false;
+                searchResults = true;
+                groups = result.data.groups;
             }
         }
     }
@@ -23,9 +25,8 @@
         hideGroups = true;
         hideCreateForm = false;
     }
-
-    // console.log(data?.groups)
 </script>
+
 <svelte:head>
 	<title>🎅🏼 SS22</title>
 </svelte:head>
@@ -33,45 +34,92 @@
 <Header title={"Dashboard"} subtitle={"Join or create a group!"} />
 
 <div class="Page PageWithHeader">
-    <div class="Card Groups {hideGroups ? 'Hidden' : ''}">
-        <form class="CardSection GroupSearchForm" action="?/groupSearch" use:enhance={groupSearchHandler}>
-            <div class="FormField">
-                <input class="GroupSearchInput" name="GroupName" type="text" placeholder="Search for groups..." />
-                <svg class="FormFieldIcon" version="1.1" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
-                    <path d="m546 240c-64.613 0.03125-127.56 20.512-179.82 58.508-52.258 38-91.148 91.562-111.1 153.02-19.945 61.457-19.93 127.65 0.050781 189.1s58.898 114.99 111.18 152.96c52.277 37.969 115.23 58.418 179.85 58.414 64.613-0.003906 127.57-20.461 179.84-58.441l152.4 152.4v0.003907c12.133 12.133 29.816 16.871 46.391 12.43 16.574-4.4414 29.52-17.387 33.961-33.961 4.4414-16.574-0.29688-34.258-12.43-46.391l-152.4-152.4c44.508-61.18 64.754-136.69 56.824-211.93-7.9297-75.242-43.477-144.87-99.766-195.43-56.289-50.555-129.32-78.449-204.98-78.281zm0 516c-55.695 0-109.11-22.125-148.49-61.508-39.383-39.383-61.508-92.797-61.508-148.49s22.125-109.11 61.508-148.49c39.383-39.383 92.797-61.508 148.49-61.508s109.11 22.125 148.49 61.508c39.383 39.383 61.508 92.797 61.508 148.49-0.0625 55.676-22.207 109.05-61.578 148.42-39.367 39.371-92.746 61.516-148.42 61.578z"/>
-                </svg>
-            </div>
-        </form>
-
-        <div class="CardSection SearchResults {hideSearchResults ? 'Hidden' : ''}">
+    <!-- <div class="Card AllGroups {hideGroups ? 'Hidden' : ''}">
+        <div class="CardSection">
             <div class="CardSectionInner">
-                <h3 class="CardSectionTitle">Search Results:</h3>
+                <h4 class="SmallTitle">All Groups:</h4>
                 <ul class="GroupList">
                     {#each data.groups as Group}
                         <a href="/groups/{Group.id}" class="GroupListItem">
-                            {#if Group.Members?.includes("Nick") }
-                                <svg class="GroupListItemIcon" version="1.1" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
-                                    <g>
-                                    <path d="m600 192c-255.6 0-482.4 152.4-578.4 390-4.8008 12-4.8008 24 0 36 62.398 154.8 181.2 276 334.8 340.8 77.996 32.398 160.8 49.199 243.6 49.199 79.199 0 158.4-15.602 234-45.602 156-62.398 282-188.4 344.4-344.4 4.8008-12 4.8008-24 0-36-96-237.6-322.8-390-578.4-390zm198 681.6c-130.8 52.801-274.8 51.602-404.4-3.6016-123.6-52.801-220.8-147.6-276-270 85.199-190.8 272.4-312 482.4-312s397.2 121.2 482.4 312c-56.398 123.6-158.4 222-284.4 273.6z"/>
-                                    <path d="m600 376.8c-122.4 0-223.2 99.602-223.2 223.2 0 123.6 100.8 223.2 223.2 223.2s223.2-100.8 223.2-223.2-100.8-223.2-223.2-223.2zm0 350.4c-69.602 0-127.2-56.398-127.2-127.2s57.598-127.2 127.2-127.2 127.2 57.598 127.2 127.2-57.598 127.2-127.2 127.2z"/>
-                                    </g>
-                               </svg>
-                            {:else}                               
-                                <svg class="GroupListItemIcon" version="1.1" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="m1171.7 529.2-395.04-395.04c-17.961-18.898-42.789-29.746-68.859-30.082-26.066-0.33594-51.168 9.8633-69.609 28.289-18.445 18.43-28.668 43.52-28.352 69.59 0.3125 26.066 11.137 50.906 30.02 68.883l233.52 233.16h-776.64c-34.555 0-66.484 18.434-83.762 48.359-17.277 29.926-17.277 66.797 0 96.719 17.277 29.926 49.207 48.363 83.762 48.363h774.48l-231.36 231.72c-23.41 24.629-32.176 59.738-23.094 92.48 9.082 32.742 34.68 58.32 67.434 67.375 32.75 9.0508 67.852 0.25391 92.461-23.176l395.04-395.04c18.207-18.098 28.406-42.73 28.32-68.402 0.0625-0.79688 0.0625-1.6016 0-2.3984 0.058594-0.80078 0.058594-1.6016 0-2.3984-0.007812-25.652-10.195-50.254-28.32-68.402z"/>
-                                </svg>                               
-                            {/if}
+                            <svg class="GroupListItemIcon" version="1.1" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
+                                <path d="m1171.7 529.2-395.04-395.04c-17.961-18.898-42.789-29.746-68.859-30.082-26.066-0.33594-51.168 9.8633-69.609 28.289-18.445 18.43-28.668 43.52-28.352 69.59 0.3125 26.066 11.137 50.906 30.02 68.883l233.52 233.16h-776.64c-34.555 0-66.484 18.434-83.762 48.359-17.277 29.926-17.277 66.797 0 96.719 17.277 29.926 49.207 48.363 83.762 48.363h774.48l-231.36 231.72c-23.41 24.629-32.176 59.738-23.094 92.48 9.082 32.742 34.68 58.32 67.434 67.375 32.75 9.0508 67.852 0.25391 92.461-23.176l395.04-395.04c18.207-18.098 28.406-42.73 28.32-68.402 0.0625-0.79688 0.0625-1.6016 0-2.3984 0.058594-0.80078 0.058594-1.6016 0-2.3984-0.007812-25.652-10.195-50.254-28.32-68.402z"/>
+                            </svg>                               
                             <span class="GroupListItemText">{Group.Name}</span>
                         </a>
                     {/each}
                 </ul>
             </div>
         </div>
+    </div> -->
+    
+    {#if groups.length}
+        <div class="Card Groups AllGroups {hideGroups ? 'Hidden' : ''}">
+            <form class="CardSection GroupSearchForm" action="?/groupSearch" use:enhance={groupSearchHandler}>
+                <div class="FormField">
+                    <input class="GroupSearchInput" name="GroupName" type="text" placeholder="Search for groups..." />
+                    <svg class="FormFieldIcon" version="1.1" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
+                        <path d="m546 240c-64.613 0.03125-127.56 20.512-179.82 58.508-52.258 38-91.148 91.562-111.1 153.02-19.945 61.457-19.93 127.65 0.050781 189.1s58.898 114.99 111.18 152.96c52.277 37.969 115.23 58.418 179.85 58.414 64.613-0.003906 127.57-20.461 179.84-58.441l152.4 152.4v0.003907c12.133 12.133 29.816 16.871 46.391 12.43 16.574-4.4414 29.52-17.387 33.961-33.961 4.4414-16.574-0.29688-34.258-12.43-46.391l-152.4-152.4c44.508-61.18 64.754-136.69 56.824-211.93-7.9297-75.242-43.477-144.87-99.766-195.43-56.289-50.555-129.32-78.449-204.98-78.281zm0 516c-55.695 0-109.11-22.125-148.49-61.508-39.383-39.383-61.508-92.797-61.508-148.49s22.125-109.11 61.508-148.49c39.383-39.383 92.797-61.508 148.49-61.508s109.11 22.125 148.49 61.508c39.383 39.383 61.508 92.797 61.508 148.49-0.0625 55.676-22.207 109.05-61.578 148.42-39.367 39.371-92.746 61.516-148.42 61.578z"/>
+                    </svg>
+                </div>
+            </form>
 
+            <div class="CardSection SearchResults">
+                <div class="CardSectionInner">
+                    <h4 class="SmallTitle">{searchResults ? 'Search Results:' : 'All Groups:'}</h4>
+                    <ul class="GroupList">
+                        {#each groups as Group}
+                            <a href="/groups/{Group.id}" class="GroupListItem">
+                                <svg class="GroupListItemIcon" version="1.1" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="m1171.7 529.2-395.04-395.04c-17.961-18.898-42.789-29.746-68.859-30.082-26.066-0.33594-51.168 9.8633-69.609 28.289-18.445 18.43-28.668 43.52-28.352 69.59 0.3125 26.066 11.137 50.906 30.02 68.883l233.52 233.16h-776.64c-34.555 0-66.484 18.434-83.762 48.359-17.277 29.926-17.277 66.797 0 96.719 17.277 29.926 49.207 48.363 83.762 48.363h774.48l-231.36 231.72c-23.41 24.629-32.176 59.738-23.094 92.48 9.082 32.742 34.68 58.32 67.434 67.375 32.75 9.0508 67.852 0.25391 92.461-23.176l395.04-395.04c18.207-18.098 28.406-42.73 28.32-68.402 0.0625-0.79688 0.0625-1.6016 0-2.3984 0.058594-0.80078 0.058594-1.6016 0-2.3984-0.007812-25.652-10.195-50.254-28.32-68.402z"/>
+                                </svg>                               
+                                <span class="GroupListItemText">{Group.Name}</span>
+                            </a>
+                        {/each}
+                    </ul>
+                </div>
+            </div>
+
+            <!-- {#if yourGroups.length}
+                <div class="CardSection YourGroups">
+                    <div class="CardSectionInner">
+                        <h4 class="SmallTitle">Your Groups:</h4>
+                        <ul class="GroupList">
+                            {#each yourGroups as group}
+                                <a href={`/groups/${group.id}`} class="GroupListItem">
+                                    <svg class="GroupListItemIcon" version="1.1" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
+                                        <g>
+                                            <path d="m1018.7 846.03h-837.36c-33.867 0-61.32 27.453-61.32 61.316v111.34c0 33.867 27.453 61.32 61.32 61.32h837.36c33.867 0 61.32-27.453 61.32-61.32v-111.33c0-33.867-27.453-61.32-61.32-61.32z"/>
+                                            <path d="m1023.9 797.19c-0.58203-5.3711-8.3164-74.582-26.77-154.02-5.543 0.69141-11.152 1.1641-16.883 1.1641-74.832 0-135.71-60.879-135.71-135.71 0-17.211 3.2383-33.672 9.1094-48.828-54.051-63.672-122.74-89.281-123.47-89.547l12.305-33.832c3.1719 1.1523 71.422 26.652 129.82 90.176 21.75-28.508 54.492-48.203 91.875-52.641-10.285-50.008-35.461-123.14-97.203-178.59-65.949-59.223-157.8-83.73-272.9-72.848-152.23 14.395-270.18 136.42-341.11 352.89-52.906 161.45-61.516 320.86-61.598 322.45l-0.60938 12.16h834.53zm-316.34-492.15-0.003906-0.003906h0.003906z"/>
+                                            <path d="m1050.8 438.11c38.941 38.941 38.941 102.07 0 141.02-38.938 38.938-102.07 38.938-141.01 0-38.941-38.941-38.941-102.07 0-141.02 38.938-38.941 102.07-38.941 141.01 0"/>
+                                        </g>
+                                    </svg>                             
+                                    <span class="GroupListItemText">{group.Name}</span>
+                                </a>
+                            {/each}
+                        </ul>
+                    </div>
+                </div>
+            {/if}
+
+            <div class="CardSection CreateGroup">
+                <button class="GroupListItem CreateGroupButton" on:click={createGroup}>
+                    <svg class="GroupListItemIcon" version="1.1" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
+                        <g>
+                            <path d="m797.4 553.56h-150.96v-150.96c0-25.68-20.762-46.441-46.441-46.441s-46.441 20.762-46.441 46.441v150.96l-150.96-0.003906c-25.68 0-46.441 20.762-46.441 46.441s20.762 46.441 46.441 46.441h150.96v150.96c0 25.68 20.762 46.441 46.441 46.441 25.68 0 46.441-20.762 46.441-46.441l-0.003906-150.96h150.96c25.68 0 46.441-20.762 46.441-46.441-0.003906-25.68-20.883-46.441-46.445-46.441z"/>
+                            <path d="m600 120c-264.72 0-480 215.28-480 480s215.28 480 480 480 480-215.28 480-480-215.28-480-480-480zm0 867.24c-213.48 0-387.24-173.64-387.24-387.24 0-213.48 173.64-387.24 387.24-387.24 213.6 0 387.24 173.76 387.24 387.24s-173.76 387.24-387.24 387.24z"/>
+                        </g>
+                    </svg>                          
+                    <span class="GroupListItemText">Create a group</span>
+                </button>
+            </div> -->
+        </div>
+    {/if}
+
+    <div class="Card Groups {hideGroups ? 'Hidden' : ''}">
         {#if yourGroups.length}
             <div class="CardSection YourGroups">
                 <div class="CardSectionInner">
-                    <h3 class="CardSectionTitle">Your Groups:</h3>
+                    <h4 class="SmallTitle">Your Groups:</h4>
                     <ul class="GroupList">
                         {#each yourGroups as group}
                             <a href={`/groups/${group.id}`} class="GroupListItem">
@@ -157,8 +205,9 @@
     </div>
 
     <div class="Card {hideCreateForm ? 'StartHidden' : ''}">
-        <h3 class="CardTitle">Create a group:</h3>
-        <form id="CreateGroupForm" class="CardSection CreateGroupForm" method="post" action="?/createGroup" use:enhance>
+        <!-- <h4 class="SmallTitle">Create a group:</h4> -->
+        <h3 class="CardTitle">Create a Group:</h3>
+        <form id="CreateGroupForm" class="CardSection CreateGroupForm" method="post" action="?/createGroup" use:enhance autocomplete="off">
 			<div class="FormRow">
 				<div class="FormField">
 					<label for="GroupNameInput" class="FormLabel">Group Name:</label>
@@ -170,9 +219,15 @@
 			
 			<div class="FormRow">
 				<div class="FormField">
-					<label for="SecretCodeInput" class="FormLabel">Secret Code:</label>
+					<label for="SecretCodeInput" class="FormLabel">Secret Code (recommended):</label>
 					<input id="SecretCodeInput" name="SecretCode" type="text" label="SecretCode" class="FormFieldInput" />
-                    {#if form?.SecretCode?.empty}<p class="ErrorMessage">Please enter a Secret Code.</p>{/if}
+				</div>
+			</div>
+			
+			<div class="FormRow">
+				<div class="FormField">
+					<label for="WishlistInput" class="FormLabel">Your Gift Requests/Amazon Wishlist:</label>
+					<input id="WishlistInput" name="Wishlist" type="text" label="Wishlist" class="FormFieldInput" />
 				</div>
 			</div>
 	
@@ -184,10 +239,4 @@
 </div>
 
 <style>
-    .Card {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
 </style>

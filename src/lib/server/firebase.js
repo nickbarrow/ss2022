@@ -32,9 +32,11 @@ const db = getFirestore(app);
 // const userDoc = (userId) => doc(db, "users", userId);
 // const blogDoc = (blogId) => doc(db, "blogs", blogId)
 const groupsRef = collection(db, "groups");
+const usersRef = collection(db, "users");
 
 export {
 	auth,
 	db,
-	groupsRef
+	groupsRef,
+	usersRef
 }

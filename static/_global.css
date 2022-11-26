@@ -40,6 +40,14 @@ h2 {
     margin-bottom: 40px;
 }
 
+h4.SmallTitle {
+    color: rgb(100, 116, 139);
+    font-family: var(--SecondaryFont);
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
 a {
     color: var(--PrimaryColor);
     background-color: transparent;
@@ -59,6 +67,11 @@ p {
     color: var(--PrimaryFontColor);
     font-family: var(--SecondaryFont);
     text-align: left;
+}
+
+input:autofill,
+select:autofill {
+	background-image: none;
 }
 
 
@@ -129,8 +142,8 @@ Header
 Page
 */
 .Page {
-    display: grid;
-    place-items: center;
+    /* display: grid;
+    place-items: center; */
     height: 100vh;
     max-width: 1200px;
     margin: 0 auto;
@@ -157,17 +170,16 @@ Card
     padding: 24px;
     transition: .3s ease;
     visibility: visible;
-    width: min(700px, 80%);
+    /* width: min(700px, 80%); */
+    width: 100%;
+    max-width: 500px;
+    max-height: 1000px;
 }
 .Card.StartHidden {
-    opacity: 0;
-    visibility: hidden;
-    /* transform: scale(0.6); */
+    display: none;
 }
 .Card.Hidden {
-    /* transform: translateY(30px); */
-    opacity: 0;
-    visibility: hidden;
+    display: none;
 }
 
 .CardTitle {
@@ -236,6 +248,7 @@ Forms
 
 .FormField {
     position: relative;
+    width: 100%;
 }
 
 .FormFieldIcon {
@@ -266,14 +279,12 @@ Forms
     transition: .25s;
     width: 100%;
 }
-
 .FormFieldInput:focus {
     border-color: var(--PrimaryColor);
     box-shadow: 0 0 0 3px var(--PrimaryColorShadow);
     color: var(--PrimaryFontColor);
     outline: none;
 }
-
 .FormFieldInput:last-of-type {
     margin: 0;
 }
