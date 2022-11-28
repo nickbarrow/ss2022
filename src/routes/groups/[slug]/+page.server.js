@@ -1,51 +1,26 @@
-import { redirect, invalid } from "@sveltejs/kit";
+import { redirect, invalid, error } from "@sveltejs/kit";
 import { auth, db, usersRef } from "../../../lib/server/firebase";
-import { doc, getDoc, getDocs, setDoc, query, where } from "firebase/firestore";
+import { doc, getDoc, getDocs, setDoc, query, where, updateDoc } from "firebase/firestore";
 
 export async function load({ params }) {
     if (!auth.currentUser) throw redirect(300, '/login');
-    var group = null;
+
     const groupRef = doc(db, "groups", params.slug);
     const groupSnap = await getDoc(groupRef);
-    if (groupSnap.exists()) {
-        group = {
-            id: groupSnap.id,
-            ...groupSnap.data()
-        };
-    } else throw redirect(404, 'not found');
-
-    // if (group.Members.length) {
-    //     group.MembersData = [];
-    //     const q = query(usersRef, where('uid', 'in', group.Members));
-    //     const usersSnap = await getDocs(q);
-    //     usersSnap.forEach(snapshot => {
-    //         // console.log(snapshot.data())
-    //         group.MembersData.push(snapshot.data());
-    //     });
-    // }
+    if (!groupSnap.exists()) throw error(404, 'not found');
 
     return {
         user: auth.currentUser.toJSON(),
-        group
+        group: {
+            id: groupSnap.id,
+            ...groupSnap.data()
+        }
     }
-}
+};
+
 
 
 export const actions = {
-    // groupSearch: async ({ request }) => {
-    //     const data = await request.formData();
-    //     const GroupName = data.get('GroupName');
-
-    //     let groupsSnapshot = await getDocs(groupsRef), groups = [];
-    //     groupsSnapshot.forEach(snapshot => {
-    //         groups.push(snapshot.data());
-    //     });
-    //     groups = groups.filter((group) => group.Name.toLowerCase().includes(GroupName) );
-
-    //     return {
-    //         groups
-    //     }
-    // },
     joinGroup: async ({ request }) => {
         const data = await request.formData(),
             GroupID = data.get('GroupID'),
@@ -75,11 +50,52 @@ export const actions = {
             return { success: true };
         } else return invalid(400, { SecretCode: { invalid: true } });
     },
-    // blockUser: async ({ request }) => {
-    //     const data = await request.formData(),
-    //         GroupID = data.get('GroupID'),
-    //         BlockingUserID = data.get('BlockingUserID'),
-    //         BlockedUser = data.get('BlockedUser');
-    //     console.log(GroupID, BlockingUser, BlockedUser);
-    // }
+    GenerateMatches: async ({ request }) => {
+        const data = await request.formData(),
+            GroupID = data.get('GroupID');
+
+
+        const groupRef = doc(db, "groups", GroupID);
+        const groupSnap = await getDoc(groupRef);
+        const group = groupSnap.data();
+
+        // console.log(group.Members)
+        let finish = false;
+
+        while (!finish) {
+            try {
+                let santas = [...group.Members],
+                    hat = [...group.Members];
+                
+                santas.forEach((santa, index) => {
+                    // Restrict to only valid choices (ignore self and blocked matches).
+                    let validChoices = hat.filter(member => member.uid != santa.uid);
+                    if (!validChoices.length) throw `No matches for ${santa.uid}!`;
+                    // Choose random member.
+                    let r = Math.floor(Math.random() * validChoices.length);
+                    santas[index]['recipient'] = {
+                        uid: validChoices[r].uid,
+                        displayName: validChoices[r].displayName,
+                        photoURL: validChoices[r].photoURL,
+                        wishlist: validChoices[r].wishlist
+                    };
+                    // Remove choice from hat.
+                    hat.splice(hat.findIndex(member => member.uid == validChoices[r].uid), 1);
+                });
+
+                group.Members = [...santas];
+                finish = true;
+            } catch (e) {
+                console.log('Error: Reattempting matchmaking...');
+            }
+        }
+
+        // console.log('Done, updating group...');
+        // console.log(group.Members);
+        await updateDoc(groupRef, {
+            MatchesGenerated: true,
+            Members: group.Members
+        });
+        return { success: true };
+    }
 };

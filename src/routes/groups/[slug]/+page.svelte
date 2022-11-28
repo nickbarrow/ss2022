@@ -1,39 +1,43 @@
 <script>
-    import { enhance } from "$app/forms";
-    import { goto } from "$app/navigation";
+    import { deserialize } from "$app/forms";
     import Header from "$lib/components/Header.svelte"
+
     export let data;
     export let form;
-    export let group = data.group;
-    export let userGroupMemberData = group.Members[group.Members.findIndex(member => member.uid === data.user.uid)];
+    export let { user, group } = data;
+    export let inGroup = group.Members.find(member => member.uid == data.user.uid);
+    export let groupOwner = group.Owner == user.uid;
+    export let userData = inGroup ? group.Members[group.Members.findIndex(member => member.uid === data.user.uid)] : null;
+    
+    async function generateMatches() {
+        if (window.confirm("Really generate matches?")) {
+            let formData = new FormData();
+            formData.append("GroupID", group.id);
+            let loginResponse = await fetch("?/GenerateMatches", {
+                method: 'POST',
+                body: formData
+            });
+            const { data } = deserialize(await loginResponse.text());
+            if (data.success) location.reload();
+        }
+    }
 
-    // if (!data.group || !data.user) console.log(data.group, data.user)
-    // const dontMatch = async (userID) => {
-    //     console.log(userID);
-	// 	let formData = new FormData();
-	// 	formData.append("GroupID", group.id);
-	// 	formData.append("BlockingUserID", data.user.uid);
-	// 	formData.append("BlockedUser", userID);
-	// 	let blockResponse = await fetch("?/blockUser", {
-	// 		method: 'POST',
-	// 		body: formData
-	// 	});
-	// 	const { data } = deserialize(await blockResponse.text());
-    //     console.log(data);
-	// 	// if (data.success) goto('/dashboard');
-    // }
+    function isLink(str) {
+        var expression = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;        /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
+        return expression.test(str);
+    }
 </script>
+
 <svelte:head>
-	<title>🎅🏼 SS22</title>
+	<title>{group.Name}</title>
 </svelte:head>
 
-<Header title={group?.Name} />
+<Header title={group.Name} />
 
 <div class="Page PageWithHeader">
-    <div class="Card Group">
-        
-        {#if !group.Members.find(member => member.uid === data.user.uid)}
-            <form id="LoginForm" class="LoginForm" method="post" action="?/joinGroup" autocomplete="off">
+    <div class="Card GroupDetail">
+        {#if !inGroup}
+            <form id="LoginForm" class="JoinGroupForm" method="post" action="?/joinGroup" autocomplete="off">
                 <input type="hidden" name="GroupID" value={group.id} />
                 {#if group.SecretCode !== ""}
                     <div class="FormRow">
@@ -54,28 +58,61 @@
                 {#if form?.SecretCode?.invalid}<p class="ErrorMessage">Invalid secret code.</p>{/if}
             </form>
         {:else}
-            <!-- {#if group?.Owner == data.user.uid}
+            {#if group.MatchesGenerated}
+                <div class="CardSection">
+                    <div class="CardSectionInner">
+                        <h3 class="CardSectionTitle">Match:</h3>
+                        <p>You are getting a gift for <b>{userData.recipient.displayName}</b></p>
+                        <p>They would like <b>
+                            {userData.recipient.wishlist}.
+                        </b></p>
+                    </div>
+                </div>
+            {/if}
+            
+            {#if groupOwner}
+                <!-- Generate Matches -->
                 <div class="CardSection OwnerControls">
                     <div class="CardSectionInner">
                         <h3 class="CardSectionTitle">Owner Controls:</h3>
-                        <ul class="GroupMembersList">
-                            <li class="GroupListItem">
-                                <span class="GroupListItemText">Generate Matches</span>
-                            </li>
-                        </ul>
+                        <button class="Button ButtonFullWidth" on:click={generateMatches}>
+                            {#if group.MatchesGenerated}
+                                Regenerate Matches
+                            {:else}
+                                Generate Matches
+                            {/if}
+                        </button>
                     </div>
                 </div>
-            {/if} -->
 
-            {#if userGroupMemberData.wishlist}
+                <!-- Show Matches -->
+                {#if group.MatchesGenerated}
+                    <div class="CardSection OwnerControls">
+                        <div class="CardSectionInner">
+                            <h3 class="CardSectionTitle">Matches:</h3>
+                            {#each group.Members as Member}
+                                <p>{Member.uid} -> {Member.recipient.uid}</p>
+                            {/each}
+                        </div>
+                    </div>
+                {/if}
+            {/if}
+
+            <!-- Your Wishlist: -->
+            {#if userData.wishlist}
                 <div class="CardSection">
                     <div class="CardSectionInner">
-                        <h3 class="CardSectionTitle">You asked for:</h3>
-                        <p>{userGroupMemberData.wishlist}</p>
+                        <h3 class="CardSectionTitle">Your Wishlist:</h3>
+                        {#if isLink(userData.wishlist)}
+                            <a class="WishlistLink" href="{userData.wishlist}">Wishlist</a>
+                        {:else}
+                            <p>{userData.wishlist}</p>
+                        {/if}
                     </div>
                 </div>
             {/if}
 
+            <!-- Group Members -->
             <div class="CardSection GroupMembers">
                 <div class="CardSectionInner">
                     <h3 class="CardSectionTitle">Members:</h3>
@@ -83,72 +120,69 @@
                         {#if group.Members}
                             {#each group.Members as Member}
                                 <li class="GroupMember">
-                                    <img class="GroupMemberPhoto" src="{Member.photoURL}" alt="Profile Pic" />
+                                    <img class="GroupMemberPhoto" src="{Member.photoURL}" alt="Profile Pic" referrerpolicy="no-referrer" />
                                     <div class="GroupMemberInfo">
                                         <span class="GroupMemberName">{Member.displayName}</span>
-                                        <p>{Member.wishlist}</p>
-                                        <!-- <button on:click={() => { dontMatch(Member.uid) } }>Dont match</button> -->
+                                        {#if isLink(Member.wishlist)}
+                                            <a class="GroupMemberWishlistLink" href="{Member.wishlist}">Wishlist</a>
+                                        {:else}
+                                            <p>{Member.wishlist}</p>
+                                        {/if}
                                     </div>
-                                    <!-- <a href={Member.amazonWishlist}>Amazon Wishlist</a> -->
-                                    <!-- <button class="GroupMemberDontMatch">X</button> -->
                                 </li>
                             {/each}
                         {/if}
                     </ul>
                 </div>
             </div>
+
+            <div class="CardSection">
+                <div class="CardSectionInner">
+                    <button class="Button ButtonSecondary ButtonFullWidth">Leave Group</button>
+                </div>
+            </div>
         {/if}
-        
     </div>
 </div>
 
 <style>
-    .FormRow.FormRowWithButton {
-        flex-direction: row;
-        align-items: flex-end;
-        margin-bottom: 4px;
+    .GroupDetail {
+        padding: 0;
     }
 
-    .FormRow.FormRowWithButton .FormFieldInput {
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
-    }
-
-    .FormRow.FormRowWithButton .Button {
-        flex-shrink: 0;
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-        z-index: 1;
+    .JoinGroupForm {
+        padding: 12px;
     }
 
     .GroupMembersList {
         list-style: none;
+        padding: 0;
     }
 
     .GroupMember {
-        border-radius: 5px;
         display: flex;
         flex-direction: row;
         align-items: center;
-        padding: 5px 10px;
-        transition: .25s;
+        margin-bottom: 12px;
     }
-    .GroupMember:hover {
-        background-color: var(--PrimaryColor);
+    .GroupMember:last-child {
+        margin: 0;
     }
 
     .GroupMemberPhoto {
         border-radius: 50%;
-        max-width: 50px;
-        max-height: 50px;
-        margin-right: 16px;
+        max-width: 40px;
+        max-height: 40px;
+        margin-right: 12px;
     }
 
     .GroupMemberName {
         font-family: var(--SecondaryFont);
-        transition: .25s;
     }
-    .GroupMember:hover {
-        color: #FFFFFF;
+
+    .GroupMemberWishlistLink {
+        display: block;
+        color: var(--PrimaryRed);
+        width: fit-content;
     }
 </style>

@@ -15,7 +15,7 @@
             <p class="HeroSubtitle">What's the best gift you can give for $20?</p>
             <div class="HeroButtons">
                 <!-- <a class="Button ButtonLarge" href="/signup">Sign Up</a> -->
-                <a class="Button  ButtonLarge ButtonSecondary" href="/login">Log In</a>
+                <a class="Button ButtonLarge" href="/login">Log In</a>
             </div>
         </div>
         <img class="HeroImage" src="secret-santa.svg" alt="Secret Santa" />
@@ -27,6 +27,12 @@
         --HeroFlexGap: 20px;
         --HeroContentWidth: calc(60% - calc(var(--HeroFlexGap)/2));
         --HeroImageWidth: calc(40% - calc(var(--HeroFlexGap)/2));
+    }
+
+    .Page {
+        border-radius: 20px;
+        height: auto;
+        margin-top: 12px;
     }
     
     .Hero {

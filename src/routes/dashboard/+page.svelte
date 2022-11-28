@@ -1,17 +1,15 @@
 <script>
     import { enhance } from "$app/forms";
     import Header from "$lib/components/Header.svelte"
-    import "./dashboard.css";
 
     export let data;
-    export let groups = data.groups;
+    export let { groups, user } = data;
     export let form;
     export let hideGroups = false;
     export let hideCreateForm = true;
-    // export let hideSearchResults = true;
-    export let yourGroups = data?.groups?.filter(group => group.Members.includes(data.user.uid)) || [];
+    export let yourGroups = data.groups.filter(group => group.Members.find(member => member.uid == user.uid));
     export let searchResults = false;
-
+    
     const groupSearchHandler = async ({ form, data, action, cancel }) => {
         return async ({ result, update }) => {
             if (result.data.groups) {
@@ -52,8 +50,10 @@
         </div>
     </div> -->
     
+    <!-- Search/All Groups -->
     {#if groups.length}
-        <div class="Card Groups AllGroups {hideGroups ? 'Hidden' : ''}">
+        <!-- <div class="Card Groups AllGroups {hideGroups ? 'Hidden' : ''}"> -->
+        <div class="Groups {hideGroups ? 'Hidden' : ''}">
             <form class="CardSection GroupSearchForm" action="?/groupSearch" use:enhance={groupSearchHandler}>
                 <div class="FormField">
                     <input class="GroupSearchInput" name="GroupName" type="text" placeholder="Search for groups..." />
@@ -65,35 +65,58 @@
 
             <div class="CardSection SearchResults">
                 <div class="CardSectionInner">
-                    <h4 class="SmallTitle">{searchResults ? 'Search Results:' : 'All Groups:'}</h4>
+                    <h4 class="CardSectionTitle">{searchResults ? 'Search Results:' : 'All Groups:'}</h4>
                     <ul class="GroupList">
                         {#each groups as Group}
                             <a href="/groups/{Group.id}" class="GroupListItem">
-                                <svg class="GroupListItemIcon" version="1.1" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
+                                <!-- <svg class="GroupListItemIcon" version="1.1" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
                                     <path d="m1171.7 529.2-395.04-395.04c-17.961-18.898-42.789-29.746-68.859-30.082-26.066-0.33594-51.168 9.8633-69.609 28.289-18.445 18.43-28.668 43.52-28.352 69.59 0.3125 26.066 11.137 50.906 30.02 68.883l233.52 233.16h-776.64c-34.555 0-66.484 18.434-83.762 48.359-17.277 29.926-17.277 66.797 0 96.719 17.277 29.926 49.207 48.363 83.762 48.363h774.48l-231.36 231.72c-23.41 24.629-32.176 59.738-23.094 92.48 9.082 32.742 34.68 58.32 67.434 67.375 32.75 9.0508 67.852 0.25391 92.461-23.176l395.04-395.04c18.207-18.098 28.406-42.73 28.32-68.402 0.0625-0.79688 0.0625-1.6016 0-2.3984 0.058594-0.80078 0.058594-1.6016 0-2.3984-0.007812-25.652-10.195-50.254-28.32-68.402z"/>
-                                </svg>                               
-                                <span class="GroupListItemText">{Group.Name}</span>
+                                </svg>                                -->
+                                <div class="GroupListItemLeft">
+                                    <h3 class="GroupListItemTitle">{Group.Name}</h3>
+                                    <div class="GroupListItemRow">
+                                        <span class="GroupStatus {Group.SecretCode == "" ? 'Open' : 'Private'}">{Group.SecretCode == "" ? 'Open' : 'Private'}</span>
+                                        <div class="GroupMemberIconContainer">
+                                            {#each Group.Members as Member}
+                                                <img class="GroupListItemMemberImage" src="{Member.photoURL}" alt="" referrerpolicy="no-referrer" />
+                                            {/each}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="GroupListItemRight">
+                                    <svg class="GroupListItemArrow" version="1.1" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="m734.88 600-370.91-369.01c-18.621-18.527-18.621-48.566 0.003906-67.094 18.621-18.527 48.816-18.527 67.438 0l404.63 402.56c18.621 18.527 18.621 48.566 0 67.094l-404.63 402.56c-18.621 18.527-48.816 18.527-67.438 0-18.625-18.527-18.625-48.566-0.003906-67.094z"/>
+                                    </svg>                                       
+                                </div>
                             </a>
                         {/each}
                     </ul>
                 </div>
             </div>
 
-            <!-- {#if yourGroups.length}
+            {#if yourGroups.length}
                 <div class="CardSection YourGroups">
                     <div class="CardSectionInner">
                         <h4 class="SmallTitle">Your Groups:</h4>
                         <ul class="GroupList">
-                            {#each yourGroups as group}
-                                <a href={`/groups/${group.id}`} class="GroupListItem">
-                                    <svg class="GroupListItemIcon" version="1.1" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
-                                        <g>
-                                            <path d="m1018.7 846.03h-837.36c-33.867 0-61.32 27.453-61.32 61.316v111.34c0 33.867 27.453 61.32 61.32 61.32h837.36c33.867 0 61.32-27.453 61.32-61.32v-111.33c0-33.867-27.453-61.32-61.32-61.32z"/>
-                                            <path d="m1023.9 797.19c-0.58203-5.3711-8.3164-74.582-26.77-154.02-5.543 0.69141-11.152 1.1641-16.883 1.1641-74.832 0-135.71-60.879-135.71-135.71 0-17.211 3.2383-33.672 9.1094-48.828-54.051-63.672-122.74-89.281-123.47-89.547l12.305-33.832c3.1719 1.1523 71.422 26.652 129.82 90.176 21.75-28.508 54.492-48.203 91.875-52.641-10.285-50.008-35.461-123.14-97.203-178.59-65.949-59.223-157.8-83.73-272.9-72.848-152.23 14.395-270.18 136.42-341.11 352.89-52.906 161.45-61.516 320.86-61.598 322.45l-0.60938 12.16h834.53zm-316.34-492.15-0.003906-0.003906h0.003906z"/>
-                                            <path d="m1050.8 438.11c38.941 38.941 38.941 102.07 0 141.02-38.938 38.938-102.07 38.938-141.01 0-38.941-38.941-38.941-102.07 0-141.02 38.938-38.941 102.07-38.941 141.01 0"/>
-                                        </g>
-                                    </svg>                             
-                                    <span class="GroupListItemText">{group.Name}</span>
+                            {#each yourGroups as Group}
+                                <a href="/groups/{Group.id}" class="GroupListItem">
+                                    <div class="GroupListItemLeft">
+                                        <h3 class="GroupListItemTitle">{Group.Name}</h3>
+                                        <div class="GroupListItemRow">
+                                            <span class="GroupStatus {Group.SecretCode == "" ? 'Open' : 'Private'}">{Group.SecretCode == "" ? 'Open' : 'Private'}</span>
+                                            <div class="GroupMemberIconContainer">
+                                                {#each Group.Members as Member}
+                                                    <img class="GroupListItemMemberImage" src="{Member.photoURL}" alt="" referrerpolicy="no-referrer" />
+                                                {/each}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="GroupListItemRight">
+                                        <svg class="GroupListItemArrow" version="1.1" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="m734.88 600-370.91-369.01c-18.621-18.527-18.621-48.566 0.003906-67.094 18.621-18.527 48.816-18.527 67.438 0l404.63 402.56c18.621 18.527 18.621 48.566 0 67.094l-404.63 402.56c-18.621 18.527-48.816 18.527-67.438 0-18.625-18.527-18.625-48.566-0.003906-67.094z"/>
+                                        </svg>                                       
+                                    </div>
                                 </a>
                             {/each}
                         </ul>
@@ -101,111 +124,24 @@
                 </div>
             {/if}
 
-            <div class="CardSection CreateGroup">
-                <button class="GroupListItem CreateGroupButton" on:click={createGroup}>
-                    <svg class="GroupListItemIcon" version="1.1" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
-                        <g>
-                            <path d="m797.4 553.56h-150.96v-150.96c0-25.68-20.762-46.441-46.441-46.441s-46.441 20.762-46.441 46.441v150.96l-150.96-0.003906c-25.68 0-46.441 20.762-46.441 46.441s20.762 46.441 46.441 46.441h150.96v150.96c0 25.68 20.762 46.441 46.441 46.441 25.68 0 46.441-20.762 46.441-46.441l-0.003906-150.96h150.96c25.68 0 46.441-20.762 46.441-46.441-0.003906-25.68-20.883-46.441-46.445-46.441z"/>
-                            <path d="m600 120c-264.72 0-480 215.28-480 480s215.28 480 480 480 480-215.28 480-480-215.28-480-480-480zm0 867.24c-213.48 0-387.24-173.64-387.24-387.24 0-213.48 173.64-387.24 387.24-387.24 213.6 0 387.24 173.76 387.24 387.24s-173.76 387.24-387.24 387.24z"/>
-                        </g>
-                    </svg>                          
-                    <span class="GroupListItemText">Create a group</span>
-                </button>
-            </div> -->
+            <div class="CardSection">
+                <div class="CardSectionInner">
+                    <h4 class="CardSectionTitle">Create a new Group:</h4>
+                    <button class="Button CreateGroupButton" on:click={createGroup}>
+                        <svg version="1.1" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
+                            <g>
+                                <path d="m797.4 553.56h-150.96v-150.96c0-25.68-20.762-46.441-46.441-46.441s-46.441 20.762-46.441 46.441v150.96l-150.96-0.003906c-25.68 0-46.441 20.762-46.441 46.441s20.762 46.441 46.441 46.441h150.96v150.96c0 25.68 20.762 46.441 46.441 46.441 25.68 0 46.441-20.762 46.441-46.441l-0.003906-150.96h150.96c25.68 0 46.441-20.762 46.441-46.441-0.003906-25.68-20.883-46.441-46.445-46.441z"/>
+                                <path d="m600 120c-264.72 0-480 215.28-480 480s215.28 480 480 480 480-215.28 480-480-215.28-480-480-480zm0 867.24c-213.48 0-387.24-173.64-387.24-387.24 0-213.48 173.64-387.24 387.24-387.24 213.6 0 387.24 173.76 387.24 387.24s-173.76 387.24-387.24 387.24z"/>
+                            </g>
+                        </svg>                          
+                        <span>Create Group</span>
+                    </button>
+                </div>
+            </div>
         </div>
     {/if}
 
-    <div class="Card Groups {hideGroups ? 'Hidden' : ''}">
-        {#if yourGroups.length}
-            <div class="CardSection YourGroups">
-                <div class="CardSectionInner">
-                    <h4 class="SmallTitle">Your Groups:</h4>
-                    <ul class="GroupList">
-                        {#each yourGroups as group}
-                            <a href={`/groups/${group.id}`} class="GroupListItem">
-                                <svg class="GroupListItemIcon" version="1.1" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
-                                    <g>
-                                        <path d="m1018.7 846.03h-837.36c-33.867 0-61.32 27.453-61.32 61.316v111.34c0 33.867 27.453 61.32 61.32 61.32h837.36c33.867 0 61.32-27.453 61.32-61.32v-111.33c0-33.867-27.453-61.32-61.32-61.32z"/>
-                                        <path d="m1023.9 797.19c-0.58203-5.3711-8.3164-74.582-26.77-154.02-5.543 0.69141-11.152 1.1641-16.883 1.1641-74.832 0-135.71-60.879-135.71-135.71 0-17.211 3.2383-33.672 9.1094-48.828-54.051-63.672-122.74-89.281-123.47-89.547l12.305-33.832c3.1719 1.1523 71.422 26.652 129.82 90.176 21.75-28.508 54.492-48.203 91.875-52.641-10.285-50.008-35.461-123.14-97.203-178.59-65.949-59.223-157.8-83.73-272.9-72.848-152.23 14.395-270.18 136.42-341.11 352.89-52.906 161.45-61.516 320.86-61.598 322.45l-0.60938 12.16h834.53zm-316.34-492.15-0.003906-0.003906h0.003906z"/>
-                                        <path d="m1050.8 438.11c38.941 38.941 38.941 102.07 0 141.02-38.938 38.938-102.07 38.938-141.01 0-38.941-38.941-38.941-102.07 0-141.02 38.938-38.941 102.07-38.941 141.01 0"/>
-                                    </g>
-                                </svg>                             
-                                <span class="GroupListItemText">{group.Name}</span>
-                            </a>
-                        {/each}
-                        
-                        <!-- <li class="GroupListItem">
-                            <svg class="GroupListItemIcon" version="1.1" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
-                                <g>
-                                    <path d="m1018.7 846.03h-837.36c-33.867 0-61.32 27.453-61.32 61.316v111.34c0 33.867 27.453 61.32 61.32 61.32h837.36c33.867 0 61.32-27.453 61.32-61.32v-111.33c0-33.867-27.453-61.32-61.32-61.32z"/>
-                                    <path d="m1023.9 797.19c-0.58203-5.3711-8.3164-74.582-26.77-154.02-5.543 0.69141-11.152 1.1641-16.883 1.1641-74.832 0-135.71-60.879-135.71-135.71 0-17.211 3.2383-33.672 9.1094-48.828-54.051-63.672-122.74-89.281-123.47-89.547l12.305-33.832c3.1719 1.1523 71.422 26.652 129.82 90.176 21.75-28.508 54.492-48.203 91.875-52.641-10.285-50.008-35.461-123.14-97.203-178.59-65.949-59.223-157.8-83.73-272.9-72.848-152.23 14.395-270.18 136.42-341.11 352.89-52.906 161.45-61.516 320.86-61.598 322.45l-0.60938 12.16h834.53zm-316.34-492.15-0.003906-0.003906h0.003906z"/>
-                                    <path d="m1050.8 438.11c38.941 38.941 38.941 102.07 0 141.02-38.938 38.938-102.07 38.938-141.01 0-38.941-38.941-38.941-102.07 0-141.02 38.938-38.941 102.07-38.941 141.01 0"/>
-                                </g>
-                            </svg>                             
-                            <span class="GroupListItemText">Group 1</span>
-                        </li>
-                        
-                        <li class="GroupListItem">
-                            <svg class="GroupListItemIcon" version="1.1" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
-                                <g>
-                                    <path d="m1049.8 425.13 25.828-69.027c6.5508-17.504 5.8828-36.504-1.8867-53.508-7.8164-17.074-21.832-30.078-39.48-36.613l-381.87-141.57c-36.34-13.457-76.887 5.0039-90.422 41.184l-25.828 69.027c-6.5508 17.504-5.8828 36.504 1.8867 53.508 7.8047 17.074 21.832 30.078 39.48 36.621l381.87 141.56c8.0625 2.9883 16.324 4.4062 24.457 4.4062 28.535-0.003906 55.441-17.434 65.965-45.59z"/>
-                                    <path d="m484.25 560.79c-15.844 42.359-63.398 63.98-105.79 48.254l-14.473-5.6016c-90.117-33.434-187.32 11.352-221.23 101.94l-11.789 31.512c-16.348 43.68-14.66 91.102 4.7461 133.52 19.488 42.613 54.48 75.082 98.074 91.23l57.258 24.086 214.83 79.637c26.707 9.9023 54.082 14.59 81.035 14.59 94.523-0.007813 183.66-57.734 218.54-150.96l158.69-424.15c-5.8438-1.1094-402.05-147.59-403.52-148.21z"/>
-                                </g>
-                            </svg>                                                      
-                            <span class="GroupListItemText">Group 2</span>
-                        </li>
-        
-                        <li class="GroupListItem">
-                            <svg class="GroupListItemIcon" version="1.1" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
-                                <g>
-                                    <path d="m265.85 472.79 206.95-206.95c-2.2852-24.137-12.496-47.641-30.941-66.09l-79.762-79.758-9.293 9.293c-16.777 16.777-19.832 31.82-22.285 43.906-2.1953 10.816-3.9258 19.359-15.098 30.531s-19.723 12.91-30.539 15.105c-12.086 2.4492-27.121 5.4961-43.898 22.273-16.77 16.77-19.816 31.801-22.258 43.883-2.1875 10.809-3.9141 19.352-15.086 30.523-11.145 11.145-19.676 12.867-30.48 15.055-12.07 2.4336-27.105 5.4727-43.867 22.234l-9.2891 9.2891 79.758 79.758c18.445 18.445 41.953 28.656 66.09 30.941z"/>
-                                    <path d="m308.96 551.05 26.293 26.289 242.09-242.09-26.293-26.293c-13.66-13.66-31.461-20.625-49.398-21.074l-213.77 213.77c0.44922 17.941 7.4141 35.738 21.074 49.398z"/>
-                                    <path d="m414.99 657.09 108.09-22.211 19.074-93.418 93.426-19.117 22.355-106.5-55.129-55.133-242.09 242.09z"/>
-                                    <path d="m716.72 603.38-93.52 19.137-19.094 93.43-108.05 22.203 94.492 94.488 242.09-242.09-93.582-93.578z"/>
-                                    <path d="m639.65 881.75c14.98 14.98 34.934 21.832 54.59 20.926l208.43-208.43c0.90625-19.66-5.9453-39.609-20.926-54.59l-23.652-23.652-242.09 242.09z"/>
-                                    <path d="m996.35 884.5c11.152-11.152 19.684-12.879 30.492-15.066 12.078-2.4414 27.105-5.4727 43.867-22.234l9.293-9.2891-89.051-89.051c-17.305-17.305-39.074-27.285-61.621-30.359l-210.84 210.83c3.0781 22.551 13.059 44.32 30.363 61.625l89.051 89.051 9.293-9.293c16.777-16.777 19.832-31.82 22.285-43.906 2.1953-10.816 3.9258-19.359 15.098-30.531s19.715-12.898 30.531-15.098c12.086-2.4492 27.129-5.5039 43.906-22.281 16.77-16.77 19.809-31.809 22.258-43.883 2.1758-10.812 3.9102-19.352 15.07-30.512z"/>
-                                    <path d="m876.05 281.24 89.402-86.367 33.352 34.523-89.402 86.367z"/>
-                                    <path d="m715.82 120h48v122.14h-48z"/>
-                                    <path d="m953.57 424.61h126.43v48h-126.43z"/>
-                                    <path d="m198.05 968.46 86.977-88.797 34.289 33.586-86.977 88.797z"/>
-                                    <path d="m426.89 954.41h48v125.59h-48z"/>
-                                    <path d="m120 718.1h122.99v48h-122.99z"/>
-                                </g>
-                            </svg>                                               
-                            <span class="GroupListItemText">Group 3</span>
-                        </li>
-        
-                        <li class="GroupListItem">
-                            <svg class="GroupListItemIcon" version="1.1" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
-                                <g>
-                                    <path d="m497.38 234.45h-38.988v115.36c-75.043 30.098-136.46 82.477-178.09 147.91h639.39c-41.629-65.434-103.05-117.81-178.09-147.91v-115.36h-38.984v-11.703c0-56.574-46.031-102.61-102.61-102.61-56.582 0-102.62 46.031-102.62 102.61zm48-11.707c0-30.113 24.504-54.613 54.621-54.613 30.117 0 54.613 24.5 54.613 54.613v11.703h-109.23z"/>
-                                    <path d="m259.93 533.71c-24.996 50.867-38.852 107.84-38.852 167.55 0 62.559 15.336 121.57 42.305 173.63h673.24c26.969-52.055 42.305-111.07 42.305-173.63 0-59.715-13.859-116.68-38.852-167.55zm156.01 299.56-38.648-38.648-40.645 40.641-25.453-25.453 66.102-66.094 64.102 64.102zm-40.645-166.1-64.102-64.102 25.453-25.453 38.648 38.648 40.645-40.641 25.453 25.453zm264.36 166.1-38.645-38.648-40.645 40.641-25.453-25.453 66.102-66.094 64.102 64.102zm-40.645-166.1-64.102-64.102 25.453-25.453 38.648 38.648 40.645-40.641 25.453 25.453zm264.37 166.1-38.652-38.648-40.645 40.641-25.453-25.453 66.102-66.094 64.109 64.102zm-40.645-166.1-64.109-64.102 25.453-25.453 38.652 38.648 40.645-40.641 25.453 25.453z"/>
-                                    <path d="m915.44 910.89h-630.88c67.984 101.93 183.98 169.25 315.44 169.25s247.46-67.312 315.44-169.25z"/>
-                                </g>
-                                </svg>
-                                
-                            <span class="GroupListItemText">Group 4</span>
-                        </li> -->
-                    </ul>
-                </div>
-            </div>
-        {/if}
-
-        <div class="CardSection CreateGroup">
-            <button class="GroupListItem CreateGroupButton" on:click={createGroup}>
-                <svg class="GroupListItemIcon" version="1.1" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
-                    <g>
-                        <path d="m797.4 553.56h-150.96v-150.96c0-25.68-20.762-46.441-46.441-46.441s-46.441 20.762-46.441 46.441v150.96l-150.96-0.003906c-25.68 0-46.441 20.762-46.441 46.441s20.762 46.441 46.441 46.441h150.96v150.96c0 25.68 20.762 46.441 46.441 46.441 25.68 0 46.441-20.762 46.441-46.441l-0.003906-150.96h150.96c25.68 0 46.441-20.762 46.441-46.441-0.003906-25.68-20.883-46.441-46.445-46.441z"/>
-                        <path d="m600 120c-264.72 0-480 215.28-480 480s215.28 480 480 480 480-215.28 480-480-215.28-480-480-480zm0 867.24c-213.48 0-387.24-173.64-387.24-387.24 0-213.48 173.64-387.24 387.24-387.24 213.6 0 387.24 173.76 387.24 387.24s-173.76 387.24-387.24 387.24z"/>
-                    </g>
-                </svg>                          
-                <span class="GroupListItemText">Create a group</span>
-            </button>
-        </div>
-    </div>
-
     <div class="Card {hideCreateForm ? 'StartHidden' : ''}">
-        <!-- <h4 class="SmallTitle">Create a group:</h4> -->
         <h3 class="CardTitle">Create a Group:</h3>
         <form id="CreateGroupForm" class="CardSection CreateGroupForm" method="post" action="?/createGroup" use:enhance autocomplete="off">
 			<div class="FormRow">
@@ -239,4 +175,182 @@
 </div>
 
 <style>
+    .Groups {}
+    .Groups.Hidden {
+        display: none;
+    }
+    
+    .GroupSearchForm {
+        border-bottom: 1px solid #EAEDF1;
+        padding-bottom: 12px;
+    }
+
+    .GroupSearchInput {
+        border: none;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        color: rgba(74, 85, 104, 0.8);
+        font-family: var(--SecondaryFont);
+        font-size: 14px;
+        font-weight: 300;
+        height: 40px;
+        padding: 8px 12px 8px 48px;
+        width: 100%;
+        transition: .25s;
+    }
+    .GroupSearchInput::placeholder {
+        color: rgb(127, 140, 159);
+    }
+
+    .GroupSearchInput:focus {
+        color: rgb(74, 85, 104);
+        outline: none;
+    }
+
+    .FormFieldIcon path {
+        fill: rgb(127, 140, 159);
+        transition: .25s;
+    }
+
+    .GroupSearchInput:focus~.FormFieldIcon path {
+        fill: rgb(74, 85, 104);
+    }
+
+
+    .GroupTitle {
+        color: rgb(100, 116, 139);
+        font-family: var(--SecondaryFont);
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .GroupList {
+        border: 1px solid var(--BorderColorDarker);
+        border-radius: 10px;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+
+    .GroupListItem {
+        border-bottom: 1px solid var(--BorderColor);
+        border-radius: 0;
+        cursor: pointer;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px;
+    }
+    .GroupListItem:first-child {
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+    .GroupListItem:last-child {
+        border: none;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
+    .GroupListItem:hover {
+        background-color: rgba(100, 116, 139, 0.1);
+        color: #FFFFFF;
+    }
+
+    .GroupListItemIcon {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+    }
+    .GroupListItemIcon path {
+        fill: rgb(127, 140, 159);
+    }
+    .GroupListItem:hover .GroupListItemIcon path {
+        fill: #FFFFFF;
+    }
+
+    .GroupListItemTitle {
+        display: block;
+        color: rgb(51, 65, 85);
+        font-family: var(--SecondaryFont);
+        font-size: 20px;
+        font-weight: 500;
+        margin-bottom: 5px;
+        text-transform: capitalize;
+    }
+
+    .GroupListItemRow {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .GroupStatus {
+        border-radius: 50px;
+        color: #FFFFFF;
+        display: inline-block;
+        font-size: 10px;
+        margin-right: 10px;
+        padding: 4px 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .GroupStatus.Private {
+        background-color: var(--PrimaryRed);
+    }
+    .GroupStatus.Open {
+        background-color: rgb(77, 202, 77);
+    }
+    
+    .GroupListItemText {
+        color: rgb(51, 65, 85);
+        font-family: var(--SecondaryFont);
+        font-size: 14px;
+        margin-top: 2px;
+    }
+
+    .GroupListItem:hover .GroupListItemText {
+        color: #FFFFFF;
+    }
+
+    .GroupMemberIconContainer {
+        border-left: 2px solid #EEE;
+        display: inline-flex;
+        flex-direction: row;
+        padding-left: 10px;
+    }
+    
+    .GroupListItemMemberImage {
+        border: 3px solid #FFFFFF;
+        border-radius: 50px;
+        width: 25px;
+        height: 25px;
+        margin-left: -12px;
+    }
+    .GroupListItemMemberImage:first-child {
+        margin-left: 0;
+    }
+
+    .GroupListItemRight {}
+
+    .GroupListItemArrow {
+        width: 25px;
+        height: 25px;
+    }
+    .GroupListItemArrow path {
+        fill: rgb(100, 116, 139);
+    }
+
+
+
+    .CreateGroup {
+        padding: 12px 14px;
+    }
+
+    .CreateGroupButton {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+    }
 </style>
