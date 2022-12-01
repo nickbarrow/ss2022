@@ -1,6 +1,7 @@
 <script>
     import { deserialize } from "$app/forms";
     import Header from "$lib/components/Header.svelte"
+    import PageFooter from "$lib/components/PageFooter.svelte";
 
     export let data;
     export let form;
@@ -33,7 +34,7 @@
 	<title>{group.Name}</title>
 </svelte:head>
 
-<Header title={group.Name} />
+<Header title={group.Name} backLink="/dashboard" backText="← Back to Dashboard" />
 
 <div class="Page PageWithHeader">
     <div class="Card GroupDetail">
@@ -63,10 +64,19 @@
                 <div class="CardSection">
                     <div class="CardSectionInner">
                         <h3 class="CardSectionTitle">Match:</h3>
-                        <p>You are getting a gift for <b>{userData.recipient.displayName}</b></p>
-                        <p>They would like <b>
-                            {userData.recipient.wishlist}.
-                        </b></p>
+                        <div class="UserMatch">
+                            <img src="{userData.recipient.photoURL}" class="UserMatchImage" alt="Profile Pic" referrerpolicy="no-referrer" />
+                            <div class="UserMatchInfo">
+                                <p>You are getting a gift for <b>{userData.recipient.displayName}</b></p>
+                                {#if isLink(userData.recipient.wishlist)}
+                                    <a class="WishlistLink" href="{userData.recipient.wishlist}">View {userData.recipient.displayName}'s Wishlist →</a>
+                                {:else}
+                                    <p>They would like:
+                                        <span class="Bold">{userData.recipient.wishlist}</span>
+                                    </p>
+                                {/if}
+                            </div>
+                        </div>
                     </div>
                 </div>
             {/if}
@@ -92,7 +102,12 @@
                         <div class="CardSectionInner">
                             <h3 class="CardSectionTitle">Matches:</h3>
                             {#each group.Members as Member}
-                                <p>{Member.uid} -> {Member.recipient.uid}</p>
+                                <p>
+                                    <img src="{Member.photoURL}" alt="" class="MatchPreviewImage" referrerpolicy="no-referrer" />
+                                    {Member.displayName}
+                                    ->
+                                    <img src="{Member.recipient.photoURL}" alt="" class="MatchPreviewImage" referrerpolicy="no-referrer" />
+                                    {Member.recipient.displayName}</p>
                             {/each}
                         </div>
                     </div>
@@ -105,7 +120,7 @@
                     <div class="CardSectionInner">
                         <h3 class="CardSectionTitle">Your Wishlist:</h3>
                         {#if isLink(userData.wishlist)}
-                            <a class="WishlistLink" href="{userData.wishlist}">Wishlist</a>
+                            <a class="WishlistLink" href="{userData.wishlist}">View Your Wishlist →</a>
                         {:else}
                             <p>{userData.wishlist}</p>
                         {/if}
@@ -125,7 +140,7 @@
                                     <div class="GroupMemberInfo">
                                         <span class="GroupMemberName">{Member.displayName}</span>
                                         {#if isLink(Member.wishlist)}
-                                            <a class="GroupMemberWishlistLink" href="{Member.wishlist}">Wishlist</a>
+                                            <a class="WishlistLink" href="{Member.wishlist}">View Wishlist →</a>
                                         {:else}
                                             <p>{Member.wishlist}</p>
                                         {/if}
@@ -144,9 +159,15 @@
             </div> -->
         {/if}
     </div>
+
+    <PageFooter />
 </div>
 
 <style>
+    .Bold {
+        font-weight: 700;
+    }
+
     .GroupDetail {
         padding: 0;
     }
@@ -185,5 +206,40 @@
         display: block;
         color: var(--PrimaryRed);
         width: fit-content;
+    }
+
+    .UserMatch {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .UserMatchImage {
+        border-radius: 50px;
+        width: 50px;
+        height: 50px;
+        margin-right: 12px;
+    }
+
+    .UserMatchInfo {
+        /* display: flex; */
+    }
+
+    .MatchPreviewImage {
+        width: 20px;
+        height: 20px;
+        border-radius: 50px
+    }
+
+    .WishlistLink {
+        border-bottom: 1px solid transparent;
+        color: var(--PrimaryGreen);
+        display: block;
+        font-family: var(--SecondaryFont);
+        text-decoration: none;
+        width: fit-content;
+    }
+    .WishlistLink:hover {
+        border-color: var(--PrimaryGreen);
     }
 </style>

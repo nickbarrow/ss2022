@@ -94,59 +94,6 @@ App Layout
 
 
 /*
-Header
-*/
-.Header {
-    /* background-color: #FFFFFF;
-    border-bottom: 1px solid var(--BorderColor);
-    color: #000000; */
-    color: #FFFFFF;
-    display: flex;
-    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.75));
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    height: var(--HeaderHeight);
-}
-
-.HeaderInner {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    max-width: var(--MaxWidth);
-    margin: 0 auto;
-    padding: 0 12px;
-    width: 100%;
-}
-
-.HeaderText {
-    margin-right: 20px;
-    width: 80%;
-}
-
-.HeaderTitle {
-    font-family: var(--PrimaryFont);
-    font-size: 60px;
-    line-height: 1;
-    font-weight: 700;
-    margin-bottom: 8px;
-}
-
-.HeaderSubtitle {
-    color: rgba(238, 238, 238, 0.7);
-    font-family: var(--SecondaryFont);
-    font-size: 18px;
-    line-height: 1;
-    font-weight: 400;
-}
-
-.HeaderImage {
-    width: min(20%, 150px);
-}
-
-
-
-/*
 Page
 */
 .Page {

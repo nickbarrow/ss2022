@@ -1,6 +1,7 @@
 <script>
     import { enhance } from "$app/forms";
     import Header from "$lib/components/Header.svelte"
+    import PageFooter from "$lib/components/PageFooter.svelte";
 
     export let data;
     export let { groups, user } = data;
@@ -10,8 +11,8 @@
     export let yourGroups = data.groups.filter(group => group.Members.find(member => member.uid == user.uid));
     export let searchResults = false;
     
-    const groupSearchHandler = async ({ form, data, action, cancel }) => {
-        return async ({ result, update }) => {
+    const groupSearchHandler = async () => {
+        return async ({ result }) => {
             if (result.data.groups) {
                 searchResults = true;
                 groups = result.data.groups;
@@ -174,13 +175,11 @@
 			</div>
 		</form>
     </div>
+
+    <PageFooter />
 </div>
 
 <style>
-    .Page {
-        padding-bottom: 50px;
-    }
-    
     .Groups {}
     .Groups.Hidden {
         display: none;
