@@ -109,7 +109,7 @@
                 </div>
 
                 <!-- Show Matches -->
-                {#if group.MatchesGenerated}
+                <!-- {#if group.MatchesGenerated}
                     <div class="CardSection OwnerControls">
                         <div class="CardSectionInner">
                             <h3 class="CardSectionTitle">Matches:</h3>
@@ -123,7 +123,7 @@
                             {/each}
                         </div>
                     </div>
-                {/if}
+                {/if} -->
             {/if}
 
             <!-- Your Wishlist: -->
