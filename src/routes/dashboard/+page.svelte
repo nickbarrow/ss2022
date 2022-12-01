@@ -51,10 +51,9 @@
         </div>
     </div> -->
     
-    <!-- Search/All Groups -->
-    {#if groups.length}
-        <!-- <div class="Card Groups AllGroups {hideGroups ? 'Hidden' : ''}"> -->
-        <div class="Groups {hideGroups ? 'Hidden' : ''}">
+    <div class="Groups {hideGroups ? 'Hidden' : ''}">
+        {#if groups.length}
+            <!-- Search -->
             <form class="CardSection GroupSearchForm" action="?/groupSearch" use:enhance={groupSearchHandler}>
                 <div class="FormField">
                     <input class="GroupSearchInput" name="GroupName" type="text" placeholder="Search for groups..." />
@@ -64,6 +63,7 @@
                 </div>
             </form>
 
+            <!-- Search Results/All Groups -->
             <div class="CardSection SearchResults">
                 <div class="CardSectionInner">
                     <h4 class="CardSectionTitle">{searchResults ? 'Search Results:' : 'All Groups:'}</h4>
@@ -95,6 +95,7 @@
                 </div>
             </div>
 
+            <!-- Your Groups -->
             {#if yourGroups.length}
                 <div class="CardSection YourGroups">
                     <div class="CardSectionInner">
@@ -124,25 +125,25 @@
                     </div>
                 </div>
             {/if}
+        {/if}
 
-            <div class="CardSection">
-                <div class="CardSectionInner">
-                    <h4 class="CardSectionTitle">Create a new Group:</h4>
-                    <button class="Button CreateGroupButton" on:click={createGroup}>
-                        <svg version="1.1" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
-                            <g>
-                                <path d="m797.4 553.56h-150.96v-150.96c0-25.68-20.762-46.441-46.441-46.441s-46.441 20.762-46.441 46.441v150.96l-150.96-0.003906c-25.68 0-46.441 20.762-46.441 46.441s20.762 46.441 46.441 46.441h150.96v150.96c0 25.68 20.762 46.441 46.441 46.441 25.68 0 46.441-20.762 46.441-46.441l-0.003906-150.96h150.96c25.68 0 46.441-20.762 46.441-46.441-0.003906-25.68-20.883-46.441-46.445-46.441z"/>
-                                <path d="m600 120c-264.72 0-480 215.28-480 480s215.28 480 480 480 480-215.28 480-480-215.28-480-480-480zm0 867.24c-213.48 0-387.24-173.64-387.24-387.24 0-213.48 173.64-387.24 387.24-387.24 213.6 0 387.24 173.76 387.24 387.24s-173.76 387.24-387.24 387.24z"/>
-                            </g>
-                        </svg>                          
-                        <span>Create Group</span>
-                    </button>
+        <div class="CardSection">
+            <div class="CardSectionInner">
+                <h4 class="CardSectionTitle">Create a new Group:</h4>
+                <button class="Button CreateGroupButton" on:click={createGroup}>
+                    <svg version="1.1" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
+                        <g>
+                            <path d="m797.4 553.56h-150.96v-150.96c0-25.68-20.762-46.441-46.441-46.441s-46.441 20.762-46.441 46.441v150.96l-150.96-0.003906c-25.68 0-46.441 20.762-46.441 46.441s20.762 46.441 46.441 46.441h150.96v150.96c0 25.68 20.762 46.441 46.441 46.441 25.68 0 46.441-20.762 46.441-46.441l-0.003906-150.96h150.96c25.68 0 46.441-20.762 46.441-46.441-0.003906-25.68-20.883-46.441-46.445-46.441z"/>
+                            <path d="m600 120c-264.72 0-480 215.28-480 480s215.28 480 480 480 480-215.28 480-480-215.28-480-480-480zm0 867.24c-213.48 0-387.24-173.64-387.24-387.24 0-213.48 173.64-387.24 387.24-387.24 213.6 0 387.24 173.76 387.24 387.24s-173.76 387.24-387.24 387.24z"/>
+                        </g>
+                    </svg>                          
+                    <span>Create Group</span>
+                </button>
 
-                    <a href="/logout" class="Button ButtonSecondary ButtonFullWidth">Log Out</a>
-                </div>
+                <a href="/logout" class="Button ButtonSecondary ButtonFullWidth">Log Out</a>
             </div>
         </div>
-    {/if}
+    </div>
 
     <div class="Card {hideCreateForm ? 'StartHidden' : ''}">
         <h3 class="CardTitle">Create a Group:</h3>

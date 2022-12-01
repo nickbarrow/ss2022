@@ -4,7 +4,7 @@
 
 <style>
     footer {
-        color: rgba(0, 0, 0, 0.65);
+        color: #515151;
         font-family: var(--SecondaryFont);
         font-size: 14px;
         text-align: center;

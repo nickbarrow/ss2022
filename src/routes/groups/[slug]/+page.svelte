@@ -28,6 +28,18 @@
         var expression = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;        /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
         return expression.test(str);
     }
+
+    // async function block(userID) {
+    //         let formData = new FormData();
+    //         formData.append("GroupID", group.id);
+    //         let loginResponse = await fetch("?/GenerateMatches", {
+    //             method: 'POST',
+    //             body: formData
+    //         });
+    //         const { data } = deserialize(await loginResponse.text());
+    //         if (data.success) location.reload();
+    //         else console.log(data);
+    // }
 </script>
 
 <svelte:head>
@@ -69,7 +81,7 @@
                             <div class="UserMatchInfo">
                                 <p>You are getting a gift for <b>{userData.recipient.displayName}</b></p>
                                 {#if isLink(userData.recipient.wishlist)}
-                                    <a class="WishlistLink" href="{userData.recipient.wishlist}">View {userData.recipient.displayName}'s Wishlist →</a>
+                                    <a rel="external" class="WishlistLink" href={userData.recipient.wishlist}>View {userData.recipient.displayName}'s Wishlist →</a>
                                 {:else}
                                     <p>They would like:
                                         <span class="Bold">{userData.recipient.wishlist}</span>
@@ -120,7 +132,7 @@
                     <div class="CardSectionInner">
                         <h3 class="CardSectionTitle">Your Wishlist:</h3>
                         {#if isLink(userData.wishlist)}
-                            <a class="WishlistLink" href="{userData.wishlist}">View Your Wishlist →</a>
+                            <a rel="external" class="WishlistLink" href={userData.wishlist}>View Your Wishlist →</a>
                         {:else}
                             <p>{userData.wishlist}</p>
                         {/if}
@@ -140,11 +152,12 @@
                                     <div class="GroupMemberInfo">
                                         <span class="GroupMemberName">{Member.displayName}</span>
                                         {#if isLink(Member.wishlist)}
-                                            <a class="WishlistLink" href="{Member.wishlist}">View Wishlist →</a>
+                                            <a rel="external" class="WishlistLink" href={Member.wishlist}>View Wishlist →</a>
                                         {:else}
                                             <p>{Member.wishlist}</p>
                                         {/if}
                                     </div>
+                                    <!-- <button class="Button" on:click={block(Member.uid)}>Block</button> -->
                                 </li>
                             {/each}
                         {/if}
