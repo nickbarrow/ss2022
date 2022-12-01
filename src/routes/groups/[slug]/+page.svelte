@@ -202,12 +202,6 @@
         font-family: var(--SecondaryFont);
     }
 
-    .GroupMemberWishlistLink {
-        display: block;
-        color: var(--PrimaryRed);
-        width: fit-content;
-    }
-
     .UserMatch {
         display: flex;
         flex-direction: row;
@@ -219,10 +213,6 @@
         width: 50px;
         height: 50px;
         margin-right: 12px;
-    }
-
-    .UserMatchInfo {
-        /* display: flex; */
     }
 
     .MatchPreviewImage {
@@ -241,5 +231,8 @@
     }
     .WishlistLink:hover {
         border-color: var(--PrimaryGreen);
+    }
+    .WishlistLink:not(:only-child) {
+        margin-top: 5px;
     }
 </style>

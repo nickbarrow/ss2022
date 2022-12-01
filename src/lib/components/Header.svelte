@@ -15,7 +15,9 @@
             {#if backLink}
                 <a class="HeaderSubtitleLink" href="{backLink}">{backText || backLink}</a>
             {:else}
-                <p class="HeaderSubtitle">{subtitle}</p>
+                {#if subtitle}
+                    <p class="HeaderSubtitle">{subtitle}</p>
+                {/if}
             {/if}
         </div>
         <img class="HeaderImage" src={SecretSantaHeaderImage} alt="Secret Santa" />
@@ -24,9 +26,6 @@
 
 <style>
     .Header {
-        /* background-color: #FFFFFF;
-        border-bottom: 1px solid var(--BorderColor);
-        color: #000000; */
         color: #FFFFFF;
         display: flex;
         filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.75));
@@ -42,7 +41,7 @@
         align-items: center;
         max-width: var(--MaxWidth);
         margin: 0 auto;
-        padding: 0 12px;
+        padding: 24px 12px;
         width: 100%;
     }
     
@@ -86,4 +85,31 @@
         border-color: var(--PrimaryGreen);
     }
 
+    @media (max-width: 640px) {
+
+        .Header {
+            min-height: 180px;
+        }
+
+        .HeaderTitle {
+            font-size: 42px;
+        }
+
+    }
+
+    @media (max-width: 420px) {
+
+        .Header {
+            min-height: 120px;
+        }
+
+        .HeaderTitle {
+            font-size: 30px;
+        }    
+
+        .HeaderSubtitle {
+            font-size: 14px;
+        }
+
+    }
 </style>

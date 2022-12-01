@@ -100,9 +100,6 @@ Page
     background-color: #FFFFFF;
     border-top-left-radius: 25px;
     border-top-right-radius: 25px;
-    /* display: grid;
-    place-items: center; */
-    /* height: 100vh; */
     max-width: var(--MaxWidth);
     margin: 0 auto;
     overflow-y: scroll;
@@ -375,36 +372,16 @@ Responsive
 */
 @media (max-width: 640px) {
 
-    .Header {
-        height: 180px;
-    }
-    
-    .HeaderTitle {
-        font-size: 42px;
-    }
-
     .Page.PageWithHeader {
-        height: calc(100vh - 180px);
+        min-height: calc(100vh - 180px);
     }
     
 }
 
 @media (max-width: 420px) {
 
-    .Header {
-        height: 120px;
-    }
-    
-    .HeaderTitle {
-        font-size: 30px;
-    }    
-
-    .HeaderSubtitle {
-        font-size: 14px;
-    }
-
     .Page.PageWithHeader {
-        height: calc(100vh - 120px);
+        min-height: calc(100vh - 120px);
     }
     
 }
