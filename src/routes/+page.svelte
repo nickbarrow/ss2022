@@ -8,17 +8,19 @@
     </title>
 </svelte:head>
 
-<div class="Page">
-    <div class="Card Hero">
-        <div class="HeroContent">
-            <h1 class="HeroTitle">Secret Santa 2022🎅🏼</h1>
-            <p class="HeroSubtitle">What's the best gift you can give for $20?</p>
-            <div class="HeroButtons">
-                <!-- <a class="Button ButtonLarge" href="/signup">Sign Up</a> -->
-                <a class="Button ButtonLarge" href="/login">Log In</a>
+<div class="PageContainer">
+    <div class="Page">
+        <div class="Card Hero">
+            <div class="HeroContent">
+                <h1 class="HeroTitle">Secret Santa 2022🎅🏼</h1>
+                <p class="HeroSubtitle">What's the best gift you can give for $20?</p>
+                <div class="HeroButtons">
+                    <!-- <a class="Button ButtonLarge" href="/signup">Sign Up</a> -->
+                    <a class="Button ButtonLarge" href="/login">Log In</a>
+                </div>
             </div>
+            <img class="HeroImage" src="secret-santa.svg" alt="Secret Santa" />
         </div>
-        <img class="HeroImage" src="secret-santa.svg" alt="Secret Santa" />
     </div>
 </div>
 
@@ -29,10 +31,14 @@
         --HeroImageWidth: calc(40% - calc(var(--HeroFlexGap)/2));
     }
 
+    .PageContainer {
+        padding-top: 20px;
+    }
+    
     .Page {
         border-radius: 20px;
         height: auto;
-        margin-top: 12px;
+        /* margin-top: 12px; */
     }
     
     .Hero {

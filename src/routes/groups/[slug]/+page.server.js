@@ -59,7 +59,8 @@ export const actions = {
         const groupSnap = await getDoc(groupRef);
         const group = groupSnap.data();
 
-        // console.log(group.Members)
+        if (group.Members.length < 2) return { success: false, message: 'Not enough members.' };
+        
         let finish = false;
 
         while (!finish) {

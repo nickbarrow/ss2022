@@ -136,6 +136,8 @@
                         </svg>                          
                         <span>Create Group</span>
                     </button>
+
+                    <a href="/logout" class="Button ButtonSecondary ButtonFullWidth">Log Out</a>
                 </div>
             </div>
         </div>
@@ -175,6 +177,10 @@
 </div>
 
 <style>
+    .Page {
+        padding-bottom: 50px;
+    }
+    
     .Groups {}
     .Groups.Hidden {
         display: none;
@@ -351,6 +357,7 @@
         display: flex;
         flex-direction: row;
         align-items: center;
+        margin-bottom: 20px;
         width: 100%;
     }
 </style>

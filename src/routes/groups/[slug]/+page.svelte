@@ -19,6 +19,7 @@
             });
             const { data } = deserialize(await loginResponse.text());
             if (data.success) location.reload();
+            else console.log(data);
         }
     }
 
@@ -136,11 +137,11 @@
                 </div>
             </div>
 
-            <div class="CardSection">
+            <!-- <div class="CardSection">
                 <div class="CardSectionInner">
                     <button class="Button ButtonSecondary ButtonFullWidth">Leave Group</button>
                 </div>
-            </div>
+            </div> -->
         {/if}
     </div>
 </div>
