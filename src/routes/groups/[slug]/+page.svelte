@@ -47,153 +47,145 @@
 	<title>{group.Name}</title>
 </svelte:head>
 
-<Header title={group.Name} backLink="/dashboard" backText="← Back to Dashboard" />
+<Header title={group.Name} backLink="/groups" backText="← Back to Groups" />
 
 <div class="Page PageWithHeader">
-    <div class="Card GroupDetail">
-        {#if !inGroup}
-            <form id="LoginForm" class="JoinGroupForm" method="post" action="?/joinGroup" autocomplete="off">
-                <input type="hidden" name="GroupID" value={group.id} />
-                {#if group.SecretCode !== ""}
-                    <div class="FormRow">
-                        <div class="FormField">
-                            <label for="SecretCodeInput" class="FormLabel">Enter Secret Code:</label>
-                            <input id="SecretCodeInput" name="SecretCode" type="text" label="SecretCode" class="FormFieldInput" />
-                        </div>
-                    </div>
-                {/if}
+    {#if !inGroup}
+        <form id="LoginForm" class="JoinGroupForm" method="post" action="?/joinGroup" autocomplete="off">
+            <input type="hidden" name="GroupID" value={group.id} />
+            {#if group.SecretCode !== ""}
                 <div class="FormRow">
                     <div class="FormField">
-                        <label for="WishlistInput" class="FormLabel">Your Gift Requests/Amazon Wishlist:</label>
-                        <input id="WishlistInput" name="Wishlist" type="text" label="Wishlist" class="FormFieldInput" />
-                    </div>
-                </div>
-                <button class="Button" type="submit">Join Group</button>
-                {#if form?.SecretCode?.empty}<p class="ErrorMessage">Please enter the secret code.</p>{/if}
-                {#if form?.SecretCode?.invalid}<p class="ErrorMessage">Invalid secret code.</p>{/if}
-            </form>
-        {:else}
-            {#if group.MatchesGenerated}
-                <!-- Your Match -->
-                <div class="CardSection">
-                    <div class="CardSectionInner">
-                        <h3 class="CardSectionTitle">Match:</h3>
-                        <div class="UserMatch">
-                            <img src="{userData.recipient.photoURL}" class="UserMatchImage" alt="Profile Pic" referrerpolicy="no-referrer" />
-                            <div class="UserMatchInfo">
-                                <p>You are getting a gift for <b>{userData.recipient.displayName}</b></p>
-                                {#if isLink(userData.recipient.wishlist)}
-                                    <a rel="external" class="WishlistLink" href={userData.recipient.wishlist}>View {userData.recipient.displayName}'s Wishlist →</a>
-                                {:else}
-                                    <p>They would like:
-                                        <span class="Bold">{userData.recipient.wishlist}</span>
-                                    </p>
-                                {/if}
-                            </div>
-                        </div>
+                        <label for="SecretCodeInput" class="FormLabel">Enter Secret Code:</label>
+                        <input id="SecretCodeInput" name="SecretCode" type="text" label="SecretCode" class="FormFieldInput" />
                     </div>
                 </div>
             {/if}
-            
-            {#if groupOwner}
-                <!-- Generate Matches -->
-                <div class="CardSection OwnerControls">
-                    <div class="CardSectionInner">
-                        <h3 class="CardSectionTitle">Owner Controls:</h3>
-                        <button class="Button ButtonFullWidth" on:click={generateMatches}>
-                            {#if group.MatchesGenerated}
-                                Regenerate Matches
+            <div class="FormRow">
+                <div class="FormField">
+                    <label for="WishlistInput" class="FormLabel">Your Gift Requests/Amazon Wishlist:</label>
+                    <input id="WishlistInput" name="Wishlist" type="text" label="Wishlist" class="FormFieldInput" />
+                </div>
+            </div>
+            <button class="Button" type="submit">Join Group</button>
+            {#if form?.SecretCode?.empty}<p class="ErrorMessage">Please enter the secret code.</p>{/if}
+            {#if form?.SecretCode?.invalid}<p class="ErrorMessage">Invalid secret code.</p>{/if}
+        </form>
+    {:else}
+        {#if group.MatchesGenerated}
+            <!-- Your Match -->
+            <div class="PageSection">
+                <div class="PageSectionInner">
+                    <h3 class="PageSectionTitle">Match:</h3>
+                    <div class="UserMatch">
+                        <img src="{userData.recipient.photoURL}" class="UserMatchImage" alt="Profile Pic" referrerpolicy="no-referrer" />
+                        <div class="UserMatchInfo">
+                            <p>You are getting a gift for <b>{userData.recipient.displayName}</b></p>
+                            {#if isLink(userData.recipient.wishlist)}
+                                <a rel="external" class="WishlistLink" href={userData.recipient.wishlist}>View {userData.recipient.displayName}'s Wishlist →</a>
                             {:else}
-                                Generate Matches
+                                <p>They would like:
+                                    <span class="Bold">{userData.recipient.wishlist}</span>
+                                </p>
                             {/if}
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Show Matches -->
-                <!-- {#if group.MatchesGenerated}
-                    <div class="CardSection OwnerControls">
-                        <div class="CardSectionInner">
-                            <h3 class="CardSectionTitle">Matches:</h3>
-                            {#each group.Members as Member}
-                                <p>
-                                    <img src="{Member.photoURL}" alt="" class="MatchPreviewImage" referrerpolicy="no-referrer" />
-                                    {Member.displayName}
-                                    ->
-                                    <img src="{Member.recipient.photoURL}" alt="" class="MatchPreviewImage" referrerpolicy="no-referrer" />
-                                    {Member.recipient.displayName}</p>
-                            {/each}
                         </div>
                     </div>
-                {/if} -->
-            {/if}
-
-            <!-- Your Wishlist: -->
-            {#if userData.wishlist}
-                <div class="CardSection">
-                    <div class="CardSectionInner">
-                        {#if hideEditWishlistForm}
-                            <h3 class="CardSectionTitle">Your Wishlist:</h3>
-                            {#if !isLink(userData.wishlist)}<p class="TextWishlist">{userData.wishlist}</p>{/if}
-                            <div class="FormRow">
-                                {#if isLink(userData.wishlist)}
-                                    <div class="FormField">
-                                        <a rel="external" class="Button" href={userData.wishlist}>View Wishlist</a>
-                                    </div>
-                                {/if}
-                                <div class="FormField">
-                                    <button class="Button ButtonSecondary EditWishlistButton" on:click={() => { hideEditWishlistForm = false; }}>Edit Wishlist</button>
-                                </div>
-                            </div>
-                        {:else}
-                            <h3 class="CardSectionTitle">Update Wishlist:</h3>
-                            <form id="UpdateWishlistForm" method="post" action="?/UpdateWishlist" class="EditWishlistForm" autocomplete="off">
-                                <input type="hidden" name="UserID" value={user.uid} />
-                                <input type="hidden" name="GroupID" value={group.id} />
-                                <div class="FormRow">
-                                    <div class="FormField FormFieldGrow">
-                                        <input id="WishlistInput" name="Wishlist" type="text" label="Wishlist" class="FormFieldInput" value={userData.wishlist} />
-                                    </div>
-                                    <button type="submit" class="Button">Update</button>
-                                </div>
-                            </form>
-                        {/if}
-                    </div>
                 </div>
-            {/if}
-
-            <!-- Group Members -->
-            <div class="CardSection GroupMembers">
-                <div class="CardSectionInner">
-                    <h3 class="CardSectionTitle">Members:</h3>
-                    <ul class="GroupMembersList">
-                        {#if group.Members}
-                            {#each group.Members as Member}
-                                <li class="GroupMember">
-                                    <img class="GroupMemberPhoto" src="{Member.photoURL}" alt="Profile Pic" referrerpolicy="no-referrer" />
-                                    <div class="GroupMemberInfo">
-                                        <span class="GroupMemberName">{Member.displayName}</span>
-                                        {#if isLink(Member.wishlist)}
-                                            <a rel="external" class="WishlistLink" href={Member.wishlist}>View Wishlist →</a>
-                                        {:else}
-                                            <p>{Member.wishlist}</p>
-                                        {/if}
-                                    </div>
-                                    <!-- <button class="Button" on:click={block(Member.uid)}>Block</button> -->
-                                </li>
-                            {/each}
+            </div>
+        {/if}
+        
+        {#if groupOwner}
+            <!-- Generate Matches -->
+            <div class="PageSection OwnerControls">
+                <div class="PageSectionInner">
+                    <h3 class="PageSectionTitle">Owner Controls:</h3>
+                    <button class="Button ButtonFullWidth" on:click={generateMatches}>
+                        {#if group.MatchesGenerated}
+                            Regenerate Matches
+                        {:else}
+                            Generate Matches
                         {/if}
-                    </ul>
+                    </button>
                 </div>
             </div>
 
-            <!-- <div class="CardSection">
-                <div class="CardSectionInner">
-                    <button class="Button ButtonSecondary ButtonFullWidth">Leave Group</button>
+            <!-- Show Matches -->
+            <!-- {#if group.MatchesGenerated}
+                <div class="PageSection OwnerControls">
+                    <div class="PageSectionInner">
+                        <h3 class="PageSectionTitle">Matches:</h3>
+                        {#each group.Members as Member}
+                            <p>
+                                <img src="{Member.photoURL}" alt="" class="MatchPreviewImage" referrerpolicy="no-referrer" />
+                                {Member.displayName}
+                                ->
+                                <img src="{Member.recipient.photoURL}" alt="" class="MatchPreviewImage" referrerpolicy="no-referrer" />
+                                {Member.recipient.displayName}</p>
+                        {/each}
+                    </div>
                 </div>
-            </div> -->
+            {/if} -->
         {/if}
-    </div>
+
+        <!-- Your Wishlist: -->
+        {#if userData.wishlist}
+            <div class="PageSection">
+                <div class="PageSectionInner">
+                    {#if hideEditWishlistForm}
+                        <h3 class="PageSectionTitle">Your Wishlist:</h3>
+                        {#if !isLink(userData.wishlist)}<p class="TextWishlist">{userData.wishlist}</p>{/if}
+                        <div class="FormRow FormRow2Cols">
+                            {#if isLink(userData.wishlist)}
+                                <div class="FormField">
+                                    <a rel="external" class="Button ButtonFullWidth ButtonCentered" href={userData.wishlist}>View Wishlist</a>
+                                </div>
+                            {/if}
+                            <div class="FormField">
+                                <button class="Button ButtonSecondary ButtonFullWidth ButtonCentered EditWishlistButton" on:click={() => { hideEditWishlistForm = false; }}>Edit Wishlist</button>
+                            </div>
+                        </div>
+                    {:else}
+                        <h3 class="PageSectionTitle">Update Wishlist:</h3>
+                        <form id="UpdateWishlistForm" method="post" action="?/UpdateWishlist" class="EditWishlistForm" autocomplete="off">
+                            <input type="hidden" name="UserID" value={user.uid} />
+                            <input type="hidden" name="GroupID" value={group.id} />
+                            <div class="FormRow">
+                                <div class="FormField FormFieldGrow">
+                                    <input id="WishlistInput" name="Wishlist" type="text" label="Wishlist" class="FormFieldInput" value={userData.wishlist} />
+                                </div>
+                                <button type="submit" class="Button">Update</button>
+                            </div>
+                        </form>
+                    {/if}
+                </div>
+            </div>
+        {/if}
+
+        <!-- Group Members -->
+        <div class="PageSection GroupMembers">
+            <div class="PageSectionInner">
+                <h3 class="PageSectionTitle">Members:</h3>
+                <ul class="GroupMembersList">
+                    {#if group.Members}
+                        {#each group.Members as Member}
+                            <li class="GroupMember">
+                                <img class="GroupMemberPhoto" src="{Member.photoURL}" alt="Profile Pic" referrerpolicy="no-referrer" />
+                                <div class="GroupMemberInfo">
+                                    <span class="GroupMemberName">{Member.displayName}</span>
+                                    {#if isLink(Member.wishlist)}
+                                        <a rel="external" class="WishlistLink" href={Member.wishlist}>View Wishlist →</a>
+                                    {:else}
+                                        <p>{Member.wishlist}</p>
+                                    {/if}
+                                </div>
+                                <!-- <button class="Button" on:click={block(Member.uid)}>Block</button> -->
+                            </li>
+                        {/each}
+                    {/if}
+                </ul>
+            </div>
+        </div>
+    {/if}
 
     <PageFooter />
 </div>

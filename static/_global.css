@@ -10,7 +10,7 @@
     --PrimaryFont: 'Cinzel Decorative', sans-serif;
     --SecondaryFont: 'Inter', sans-serif;
     
-    --PrimaryFontColor: rgb(74, 85, 104);
+    --UIGray: rgb(74, 85, 104);
 
     --BorderColor: rgb(226, 232, 240);
     --BorderColorDarker: rgb(207, 214, 222);
@@ -69,7 +69,7 @@ a:hover {
 }
 
 p {
-    color: var(--PrimaryFontColor);
+    color: var(--UIGray);
     font-family: var(--SecondaryFont);
     text-align: left;
 }
@@ -107,79 +107,34 @@ Page
     position: relative;
 }
 .Page.PageWithHeader {
-    /* height: calc(100vh - var(--HeaderHeight)); */
     min-height: calc(100vh - var(--HeaderHeight));
 }
 
-
-
-/*
-Card
-*/
-.Card {
-    background-color: #FFFFFF;
-    border-radius: 5px;
-    margin: 0 auto;
-    /* max-width: 500px; */
-    max-height: 1000px;
-    opacity: 1;
-    padding: 24px;
-    transition: .3s ease;
-    visibility: visible;
-    width: 100%;
-}
-.Card.StartHidden {
-    display: none;
-}
-.Card.Hidden {
-    display: none;
-}
-
-.CardTitle {
-    color: rgba(0, 0, 0, 0.9);
-    font-family: var(--SecondaryFont);
-    font-size: 24px;
-    font-weight: 600;
-    line-height: 1;
-    margin-bottom: 24px;
-}
-
-.CardInput {
-    border-radius: 5px;
-    border: 1px solid #DCE0E4;
-    /* box-shadow: 0 0 0 1px #E3E6E8; */
-    font-size: 16px;
-    padding: 4px 12px 4px 20px;
-    transition: .25s;
-}
-.CardInput:focus {
-    border-color: var(--PrimaryRed);
-    box-shadow: 0 0 0 3px var(--PrimaryRedShadow);
-    outline: none;
-}
-.CardInput::before {
-    background-image: url();
-}
-
-.CardSection {
-    border-bottom: 1px solid #EAEDF1;
-    max-height: 100vh;
-    transition: max-height .25s;
-}
-.CardSection:last-child {
-    border: none;
-}
-.CardSection.Hidden {
-    border: none;
-    max-height: 0;
-    overflow: hidden;
-}
-
-.CardSectionInner {
+.PageContent {
     padding: 12px;
 }
 
-.CardSectionTitle {
+.PageContentHeader {
+    border-bottom: 1px solid var(--BorderColor);
+    font-size: 24px;
+    font-family: var(--SecondaryFont);
+    font-weight: 700;
+    padding-bottom: 12px;
+    margin-bottom: 24px;
+}
+
+.PageSection {
+    border-bottom: 1px solid #EAEDF1;
+}
+.PageSection:last-child {
+    border: none;
+}
+
+.PageSectionInner {
+    padding: 12px;
+}
+
+.PageSectionTitle {
     color: rgb(100, 116, 139);
     font-family: var(--SecondaryFont);
     font-size: 12px;
@@ -195,11 +150,14 @@ Forms
 .FormRow {
     display: flex;
     flex-direction: row;
-    /* align-items: flex-start; */
     margin-bottom: 20px;
 }
 .FormRow:last-child {
     margin: 0;
+}
+
+.FormRow2Cols {
+    gap: 12px; 
 }
 
 .FormField {
@@ -217,6 +175,11 @@ Forms
     flex-grow: 1;
 }
 
+.FormRow2Cols .FormField {
+    width: 50%;
+    margin: 0;
+}
+
 .FormFieldIcon {
     height: 30px;
     position: absolute;
@@ -225,7 +188,7 @@ Forms
 }
 
 .FormLabel {
-    color: var(--PrimaryFontColor);
+    color: var(--UIGray);
     display: block;
     font-family: Helvetica, sans-serif;
     font-size: 14px;
@@ -248,7 +211,7 @@ Forms
 .FormFieldInput:focus {
     border-color: var(--PrimaryGreen);
     box-shadow: 0 0 0 3px var(--PrimaryGreenShadow);
-    color: var(--PrimaryFontColor);
+    color: var(--UIGray);
     outline: none;
 }
 .FormFieldInput:last-of-type {
@@ -276,13 +239,21 @@ Forms
 }
 
 
+/* Form Error Messages */
+.ErrorMessage {
+    color: rgb(204, 53, 63);
+    font-size: 12px;
+    text-align: left;
+    margin: 5px 0 0;
+}
+
 
 /*
 Buttons
 */
 .Button {
     background-color: var(--PrimaryGreen);
-    border: none;
+    border: 1px solid var(--PrimaryGreen);
     color: #FFFFFF;
     cursor: pointer;
     border-radius: 10px;
@@ -297,6 +268,7 @@ Buttons
 }
 .Button:hover {
     background-color: var(--PrimaryGreenHover);
+    border-color: var(--PrimaryGreenHover);
     color: #FFFFFF;
 }
 .Button:focus,
@@ -304,45 +276,36 @@ Buttons
     box-shadow: 0 0 0 3px var(--PrimaryGreenShadow);
 }
 
-.Button > svg {
-    width: 20px;
-    height: 20px;
-    margin-right: 10px;
-}
-    
-.Button > svg path {
-    fill: #FFFFFF;
-}
-
 .ButtonLarge {
     font-size: 22px;
     padding: 15px 20px;
-}
-
-.ButtonSecondary {
-    background-color: rgb(255, 238, 241);
-    border: 1px solid rgba(204, 53, 63, 0.132);
-    color: rgb(204, 53, 63);
-}
-.ButtonSecondary:hover {
-    color: rgb(204, 53, 63);
-    background-color: rgb(239, 225, 227);
-    border-color: var(--PrimaryRed);
-}
-.ButtonSecondary:focus,
-.ButtonSecondary:active {
-    box-shadow: 0 0 0 3px rgb(228, 213, 215);
-}
-
-.ButtonSecondary > svg path {
-    fill: rgb(204, 53, 63);
 }
 
 .Button.ButtonFullWidth {
     width: 100%;
 }
 
+.Button.ButtonCentered {
+    text-align: center;
+}
 
+.Button.IconButton {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.Button.IconButton .ButtonIcon {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+.Button.IconButton .ButtonIcon {
+    fill: #FFFFFF;
+}
+
+
+/* Secondary Button */
 .ButtonSecondary {
     background-color: rgba(5, 37, 37, 0.05);
     border: 1px solid rgba(7, 71, 47, 0.2);
@@ -369,32 +332,18 @@ Buttons
 }
 
 
-.ErrorMessage {
-    color: rgb(204, 53, 63);
-    font-size: 12px;
-    text-align: left;
-    margin: 5px 0 0;
-}
-
-
-
-
 
 /*
 Responsive
 */
 @media (max-width: 640px) {
-
     .Page.PageWithHeader {
         min-height: calc(100vh - 180px);
     }
-    
 }
 
 @media (max-width: 420px) {
-
     .Page.PageWithHeader {
         min-height: calc(100vh - 120px);
     }
-    
 }

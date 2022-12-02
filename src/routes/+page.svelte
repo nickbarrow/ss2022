@@ -1,5 +1,4 @@
 <script>
-    import "carbon-components-svelte/css/white.css";
 </script>
 
 <svelte:head>
@@ -10,12 +9,11 @@
 
 <div class="PageContainer">
     <div class="Page">
-        <div class="Card Hero">
+        <div class="PageContent Hero">
             <div class="HeroContent">
                 <h1 class="HeroTitle">Secret Santa 2022🎅🏼</h1>
                 <p class="HeroSubtitle">What's the best gift you can give for $20?</p>
                 <div class="HeroButtons">
-                    <!-- <a class="Button ButtonLarge" href="/signup">Sign Up</a> -->
                     <a class="Button ButtonLarge" href="/login">Log In</a>
                 </div>
             </div>
@@ -36,9 +34,8 @@
     }
     
     .Page {
-        border-radius: 20px;
+        border-radius: 25px;
         height: auto;
-        /* margin-top: 12px; */
     }
     
     .Hero {
@@ -67,7 +64,7 @@
 
     .HeroSubtitle {
         color: rgba(0, 0, 0, 0.9);
-        font-family: var(--SecondaryFontFamily);
+        font-family: var(--SecondaryFont);
         font-size: 20px;
         font-weight: 400;
         margin-bottom: 20px;
@@ -105,5 +102,4 @@
             width: 100%;
         }
     }
-    
 </style>

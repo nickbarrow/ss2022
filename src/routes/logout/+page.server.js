@@ -1,13 +1,10 @@
-import { invalid, redirect } from '@sveltejs/kit';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { redirect } from '@sveltejs/kit';
 import { auth } from '../../lib/server/firebase';
 
 // Log out and redirect logged in user.
 export async function load({ params }) {
-    if (auth.currentUser) {
-        auth.signOut();
-        throw redirect(300, '/');
-    }
+    if (auth.currentUser) auth.signOut();
+    throw redirect(300, '/');
 }
 
 export const actions = {
