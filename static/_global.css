@@ -194,14 +194,27 @@ Forms
 */
 .FormRow {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    /* align-items: flex-start; */
     margin-bottom: 20px;
+}
+.FormRow:last-child {
+    margin: 0;
 }
 
 .FormField {
     position: relative;
+    margin-right: 12px;
+}
+.FormField:last-child {
+    margin: 0;
+}
+.FormField:only-child {
     width: 100%;
+}
+
+.FormFieldGrow {
+    flex-grow: 1;
 }
 
 .FormFieldIcon {
@@ -233,8 +246,8 @@ Forms
     width: 100%;
 }
 .FormFieldInput:focus {
-    border-color: var(--PrimaryRed);
-    box-shadow: 0 0 0 3px var(--PrimaryRedShadow);
+    border-color: var(--PrimaryGreen);
+    box-shadow: 0 0 0 3px var(--PrimaryGreenShadow);
     color: var(--PrimaryFontColor);
     outline: none;
 }

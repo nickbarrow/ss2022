@@ -98,5 +98,33 @@ export const actions = {
             Members: group.Members
         });
         return { success: true };
+    },
+    UpdateWishlist: async ({ request }) => {
+        const data = await request.formData(),
+            UserID = data.get('UserID'),
+            GroupID = data.get('GroupID'),
+            Wishlist = data.get('Wishlist');
+
+        // Get group data first
+        const groupRef = doc(db, "groups", GroupID),
+            groupSnap = await getDoc(groupRef);
+        if (!groupSnap.exists()) return { success: false }
+
+        let { Members } = groupSnap.data();
+        // let group = {
+        //     id: groupSnap.id,
+        //     ...groupSnap.data()
+        // };
+
+        // group.Members[group.Members.findIndex(member => member.uid == UserID)].wishlist = Wishlist;
+        Members[Members.findIndex(member => member.uid == UserID)].wishlist = Wishlist;
+
+        await updateDoc(doc(db, "groups", GroupID), {
+            Members
+        }).catch(e => {
+            return { success: false };
+        })
+
+        return { success: true };
     }
 };

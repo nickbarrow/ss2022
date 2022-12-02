@@ -9,6 +9,7 @@
     export let inGroup = group.Members.find(member => member.uid == data.user.uid);
     export let groupOwner = group.Owner == user.uid;
     export let userData = inGroup ? group.Members[group.Members.findIndex(member => member.uid === data.user.uid)] : null;
+    export let hideEditWishlistForm = true;
     
     async function generateMatches() {
         if (window.confirm("Really generate matches?")) {
@@ -73,6 +74,7 @@
             </form>
         {:else}
             {#if group.MatchesGenerated}
+                <!-- Your Match -->
                 <div class="CardSection">
                     <div class="CardSectionInner">
                         <h3 class="CardSectionTitle">Match:</h3>
@@ -130,11 +132,31 @@
             {#if userData.wishlist}
                 <div class="CardSection">
                     <div class="CardSectionInner">
-                        <h3 class="CardSectionTitle">Your Wishlist:</h3>
-                        {#if isLink(userData.wishlist)}
-                            <a rel="external" class="WishlistLink" href={userData.wishlist}>View Your Wishlist →</a>
+                        {#if hideEditWishlistForm}
+                            <h3 class="CardSectionTitle">Your Wishlist:</h3>
+                            {#if !isLink(userData.wishlist)}<p class="TextWishlist">{userData.wishlist}</p>{/if}
+                            <div class="FormRow">
+                                {#if isLink(userData.wishlist)}
+                                    <div class="FormField">
+                                        <a rel="external" class="Button" href={userData.wishlist}>View Wishlist</a>
+                                    </div>
+                                {/if}
+                                <div class="FormField">
+                                    <button class="Button ButtonSecondary EditWishlistButton" on:click={() => { hideEditWishlistForm = false; }}>Edit Wishlist</button>
+                                </div>
+                            </div>
                         {:else}
-                            <p>{userData.wishlist}</p>
+                            <h3 class="CardSectionTitle">Update Wishlist:</h3>
+                            <form id="UpdateWishlistForm" method="post" action="?/UpdateWishlist" class="EditWishlistForm" autocomplete="off">
+                                <input type="hidden" name="UserID" value={user.uid} />
+                                <input type="hidden" name="GroupID" value={group.id} />
+                                <div class="FormRow">
+                                    <div class="FormField FormFieldGrow">
+                                        <input id="WishlistInput" name="Wishlist" type="text" label="Wishlist" class="FormFieldInput" value={userData.wishlist} />
+                                    </div>
+                                    <button type="submit" class="Button">Update</button>
+                                </div>
+                            </form>
                         {/if}
                     </div>
                 </div>
@@ -247,5 +269,9 @@
     }
     .WishlistLink:not(:only-child) {
         margin-top: 5px;
+    }
+
+    .TextWishlist {
+        margin-bottom: 12px;
     }
 </style>

@@ -146,7 +146,7 @@
     </div>
 
     <div class="Card {hideCreateForm ? 'StartHidden' : ''}">
-        <h3 class="CardTitle">Create a Group:</h3>
+        <h3 class="CreateGroupHeader">Create a Group:</h3>
         <form id="CreateGroupForm" class="CardSection CreateGroupForm" method="post" action="?/createGroup" use:enhance autocomplete="off">
 			<div class="FormRow">
 				<div class="FormField">
@@ -351,6 +351,15 @@
 
     .CreateGroup {
         padding: 12px 14px;
+    }
+
+    .CreateGroupHeader {
+        border-bottom: 1px solid var(--BorderColor);
+        font-size: 24px;
+        font-family: var(--SecondaryFont);
+        font-weight: 700;
+        padding-bottom: 12px;
+        margin-bottom: 24px;
     }
 
     .CreateGroupButton {
