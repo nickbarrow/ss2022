@@ -6,9 +6,10 @@
     export let data;
     export let form;
     export let { user, group } = data;
+    export let isGroupOwner = group.Owner == user.uid;
     export let inGroup = group.Members.find(member => member.uid == data.user.uid);
-    export let groupOwner = group.Owner == user.uid;
-    export let userData = inGroup ? group.Members[group.Members.findIndex(member => member.uid === data.user.uid)] : null;
+    export let userIndex = inGroup ? group.Members.findIndex(member => member.uid === user.uid) : -1;
+    export let userData = inGroup ? group.Members[userIndex] : null;
     export let hideEditWishlistForm = true;
     
     async function generateMatches() {
@@ -94,7 +95,7 @@
             </div>
         {/if}
         
-        {#if groupOwner}
+        {#if isGroupOwner}
             <!-- Generate Matches -->
             <div class="PageSection OwnerControls">
                 <div class="PageSectionInner">

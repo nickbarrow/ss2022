@@ -117,7 +117,9 @@ export const actions = {
         // };
 
         // group.Members[group.Members.findIndex(member => member.uid == UserID)].wishlist = Wishlist;
-        Members[Members.findIndex(member => member.uid == UserID)].wishlist = Wishlist;
+        let userIndex = Members.findIndex(member => member.uid == UserID);
+        // console.log(userIndex, Members[userIndex]);
+        Members[userIndex].wishlist = Wishlist;
 
         await updateDoc(doc(db, "groups", GroupID), {
             Members
