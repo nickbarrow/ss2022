@@ -128,38 +128,36 @@
         {/if}
 
         <!-- Your Wishlist: -->
-        {#if userData.wishlist}
-            <div class="PageSection">
-                <div class="PageSectionInner">
-                    {#if hideEditWishlistForm}
-                        <h3 class="PageSectionTitle">Your Wishlist:</h3>
-                        {#if !isLink(userData.wishlist)}<p class="TextWishlist">{userData.wishlist}</p>{/if}
-                        <div class="FormRow FormRow2Cols">
-                            {#if isLink(userData.wishlist)}
-                                <div class="FormField">
-                                    <a rel="external" class="Button ButtonFullWidth ButtonCentered" href={userData.wishlist}>View Wishlist</a>
-                                </div>
-                            {/if}
+        <div class="PageSection">
+            <div class="PageSectionInner">
+                {#if hideEditWishlistForm}
+                    <h3 class="PageSectionTitle">Your Wishlist:</h3>
+                    {#if !isLink(userData.wishlist)}<p class="TextWishlist">{userData.wishlist}</p>{/if}
+                    <div class="FormRow FormRow2Cols">
+                        {#if isLink(userData.wishlist)}
                             <div class="FormField">
-                                <button class="Button ButtonSecondary ButtonFullWidth ButtonCentered EditWishlistButton" on:click={() => { hideEditWishlistForm = false; }}>Edit Wishlist</button>
+                                <a rel="external" class="Button ButtonFullWidth ButtonCentered" href={userData.wishlist}>View Wishlist</a>
                             </div>
+                        {/if}
+                        <div class="FormField">
+                            <button class="Button ButtonSecondary ButtonFullWidth ButtonCentered EditWishlistButton" on:click={() => { hideEditWishlistForm = false; }}>Edit Wishlist</button>
                         </div>
-                    {:else}
-                        <h3 class="PageSectionTitle">Update Wishlist:</h3>
-                        <form id="UpdateWishlistForm" method="post" action="?/UpdateWishlist" class="EditWishlistForm" autocomplete="off">
-                            <input type="hidden" name="UserID" value={user.uid} />
-                            <input type="hidden" name="GroupID" value={group.id} />
-                            <div class="FormRow">
-                                <div class="FormField FormFieldGrow">
-                                    <input id="WishlistInput" name="Wishlist" type="text" label="Wishlist" class="FormFieldInput" value={userData.wishlist} />
-                                </div>
-                                <button type="submit" class="Button">Update</button>
+                    </div>
+                {:else}
+                    <h3 class="PageSectionTitle">Update Wishlist:</h3>
+                    <form id="UpdateWishlistForm" method="post" action="?/UpdateWishlist" class="EditWishlistForm" autocomplete="off">
+                        <input type="hidden" name="UserID" value={user.uid} />
+                        <input type="hidden" name="GroupID" value={group.id} />
+                        <div class="FormRow">
+                            <div class="FormField FormFieldGrow">
+                                <input id="WishlistInput" name="Wishlist" type="text" label="Wishlist" class="FormFieldInput" value={userData.wishlist} />
                             </div>
-                        </form>
-                    {/if}
-                </div>
+                            <button type="submit" class="Button">Update</button>
+                        </div>
+                    </form>
+                {/if}
             </div>
-        {/if}
+        </div>
 
         <!-- Group Members -->
         <div class="PageSection GroupMembers">
