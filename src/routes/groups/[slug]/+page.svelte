@@ -5,12 +5,13 @@
 
     export let data;
     export let form;
-    export let { user, group } = data;
-    export let isGroupOwner = group.Owner == user.uid;
+    export let { user, group, isGroupOwner } = data;
     export let inGroup = group.Members.find(member => member.uid == data.user.uid);
     export let userIndex = inGroup ? group.Members.findIndex(member => member.uid === user.uid) : -1;
     export let userData = inGroup ? group.Members[userIndex] : null;
     export let hideEditWishlistForm = true;
+
+    export const prerender = false;
     
     async function generateMatches() {
         if (window.confirm("Really generate matches?")) {
@@ -27,21 +28,10 @@
     }
 
     function isLink(str) {
-        var expression = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;        /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
+        var expression = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
+        // /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;        /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
         return expression.test(str);
     }
-
-    // async function block(userID) {
-    //         let formData = new FormData();
-    //         formData.append("GroupID", group.id);
-    //         let loginResponse = await fetch("?/GenerateMatches", {
-    //             method: 'POST',
-    //             body: formData
-    //         });
-    //         const { data } = deserialize(await loginResponse.text());
-    //         if (data.success) location.reload();
-    //         else console.log(data);
-    // }
 </script>
 
 <svelte:head>
@@ -73,7 +63,7 @@
             {#if form?.SecretCode?.invalid}<p class="ErrorMessage">Invalid secret code.</p>{/if}
         </form>
     {:else}
-        {#if group.MatchesGenerated}
+        {#if group.MatchesGenerated && userData.recipient}
             <!-- Your Match -->
             <div class="PageSection">
                 <div class="PageSectionInner">

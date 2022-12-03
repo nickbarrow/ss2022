@@ -2,6 +2,8 @@ import { redirect, invalid, error } from "@sveltejs/kit";
 import { auth, db, usersRef } from "../../../lib/server/firebase";
 import { doc, getDoc, getDocs, setDoc, query, where, updateDoc } from "firebase/firestore";
 
+export const prerender = false;
+
 export async function load({ params }) {
     if (!auth.currentUser) throw redirect(300, '/login');
 
@@ -9,12 +11,18 @@ export async function load({ params }) {
     const groupSnap = await getDoc(groupRef);
     if (!groupSnap.exists()) throw error(404, 'not found');
 
+    let group = {
+        id: groupSnap.id,
+        ...groupSnap.data()
+    };
+
+    let isGroupOwner = false;
+    if (groupRef.Owner == auth.currentUser.uid) isGroupOwner = true;
+
     return {
         user: auth.currentUser.toJSON(),
-        group: {
-            id: groupSnap.id,
-            ...groupSnap.data()
-        }
+        group,
+        isGroupOwner
     }
 };
 
