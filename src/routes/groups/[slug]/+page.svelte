@@ -160,7 +160,7 @@
                             <li class="GroupMember">
                                 <img class="GroupMemberPhoto" src="{Member.photoURL}" alt="Profile Pic" referrerpolicy="no-referrer" />
                                 <div class="GroupMemberInfo">
-                                    <span class="GroupMemberName">{Member.displayName}</span>
+                                    <span class="GroupMemberName {Member.uid == user.uid ? 'CurrentUser' : ''} {Member.uid == group.Owner ? 'GroupOwner' : ''}">{Member.displayName}</span>
                                     {#if isLink(Member.wishlist)}
                                         <a rel="external" class="WishlistLink" href={Member.wishlist}>View Wishlist →</a>
                                     {:else}
@@ -254,5 +254,32 @@
 
     .TextWishlist {
         margin-bottom: 12px;
+    }
+
+    .GroupMemberName {
+        position: relative;
+    }
+    .CurrentUser::after {
+        content: '';
+        display: block;
+        width: 5px;
+        height: 5px;
+        background-color: dodgerblue;
+        border-radius: 50px;
+        position: absolute;
+        right: -12px;
+        top: 8px;
+    }
+
+    .GroupOwner::after {
+        content: '';
+        display: block;
+        width: 5px;
+        height: 5px;
+        background-color: var(--PrimaryRed);
+        border-radius: 50px;
+        position: absolute;
+        right: -12px;
+        top: 8px;
     }
 </style>
