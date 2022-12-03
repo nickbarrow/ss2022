@@ -40,6 +40,8 @@ onAuthStateChanged(auth, (user) => {
 	else currentUser = user;
 });
 
+export const prerender = false;
+
 export {
 	auth,
 	db,
