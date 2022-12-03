@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 // import { collection, doc, getFirestore } from "firebase/firestore/lite";
 import { getFirestore, collection, doc, getDoc } from "firebase/firestore";
 
@@ -34,9 +34,16 @@ const db = getFirestore(app);
 const groupsRef = collection(db, "groups");
 const usersRef = collection(db, "users");
 
+var currentUser;
+onAuthStateChanged(auth, (user) => {
+	if (!user) currentUser = null;
+	else currentUser = user;
+});
+
 export {
 	auth,
 	db,
 	groupsRef,
-	usersRef
+	usersRef,
+	currentUser
 }

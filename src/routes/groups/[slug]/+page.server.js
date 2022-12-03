@@ -1,11 +1,25 @@
 import { redirect, invalid, error } from "@sveltejs/kit";
-import { auth, db, usersRef } from "../../../lib/server/firebase";
+import { auth, currentUser, db, usersRef } from "../../../lib/server/firebase";
 import { doc, getDoc, getDocs, setDoc, query, where, updateDoc } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
 export const prerender = false;
 
 export async function load({ params }) {
-    if (!auth.currentUser) throw redirect(300, '/login');
+    // if (!auth.currentUser) throw redirect(300, '/login');
+    if (!currentUser) throw redirect(300, '/login');
+
+    // console.log('session cookie: ', )
+    // getAuth()
+    //     .verifySessionCookie(sessionCookie, true /** checkRevoked */)
+    //     .then((decodedClaims) => {
+    //     serveContentForUser('/profile', req, res, decodedClaims);
+    //     })
+    //     .catch((error) => {
+    //     // Session cookie is unavailable or invalid. Force user to login.
+    //     res.redirect('/login');
+    //     });
+
 
     const groupRef = doc(db, "groups", params.slug);
     const groupSnap = await getDoc(groupRef);
@@ -20,7 +34,7 @@ export async function load({ params }) {
     if (groupRef.Owner == auth.currentUser.uid) isGroupOwner = true;
 
     return {
-        user: auth.currentUser.toJSON(),
+        user: currentUser.toJSON(),
         group,
         isGroupOwner
     }
