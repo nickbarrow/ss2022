@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { browserSessionPersistence, getAuth, onAuthStateChanged, setPersistence } from "firebase/auth";
 // import { collection, doc, getFirestore } from "firebase/firestore/lite";
 import { getFirestore, collection, doc, getDoc } from "firebase/firestore";
 
@@ -27,6 +27,9 @@ const app = initializeApp(firebaseConfig);
 console.log('howdy bitch');
 
 const auth = getAuth(app);
+
+setPersistence(auth, browserSessionPersistence);
+
 const db = getFirestore(app);
 // const blogCollection = collection(db, "blogs");
 // const userDoc = (userId) => doc(db, "users", userId);
