@@ -24,11 +24,9 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-console.log('howdy bitch');
+console.log('Server: howdy bitch');
 
 const auth = getAuth(app);
-
-setPersistence(auth, browserSessionPersistence);
 
 const db = getFirestore(app);
 // const blogCollection = collection(db, "blogs");

@@ -1,55 +1,55 @@
 import { redirect, invalid, error } from "@sveltejs/kit";
 import { auth, currentUser, db, usersRef } from "../../../lib/server/firebase";
 import { doc, getDoc, getDocs, setDoc, query, where, updateDoc } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
-// export async function load({ params }) {
-//     // if (!auth.currentUser) throw redirect(300, '/login');
-//     if (!currentUser) throw redirect(300, '/login');
+export const prerender = false;
 
-//     // console.log('session cookie: ', )
-//     // getAuth()
-//     //     .verifySessionCookie(sessionCookie, true /** checkRevoked */)
-//     //     .then((decodedClaims) => {
-//     //     serveContentForUser('/profile', req, res, decodedClaims);
-//     //     })
-//     //     .catch((error) => {
-//     //     // Session cookie is unavailable or invalid. Force user to login.
-//     //     res.redirect('/login');
-//     //     });
+export async function load({ params }) {
+    // if (!auth.currentUser) throw redirect(300, '/login');
+    if (!currentUser) throw redirect(300, '/login');
+
+    // console.log('session cookie: ', )
+    // getAuth()
+    //     .verifySessionCookie(sessionCookie, true /** checkRevoked */)
+    //     .then((decodedClaims) => {
+    //     serveContentForUser('/profile', req, res, decodedClaims);
+    //     })
+    //     .catch((error) => {
+    //     // Session cookie is unavailable or invalid. Force user to login.
+    //     res.redirect('/login');
+    //     });
 
 
-//     const groupRef = doc(db, "groups", params.slug);
-//     const groupSnap = await getDoc(groupRef);
-//     if (!groupSnap.exists()) throw error(404, 'not found');
+    const groupRef = doc(db, "groups", params.slug);
+    const groupSnap = await getDoc(groupRef);
+    if (!groupSnap.exists()) throw error(404, 'not found');
 
-//     let group = {
-//         id: groupSnap.id,
-//         ...groupSnap.data()
-//     };
+    let group = {
+        id: groupSnap.id,
+        ...groupSnap.data()
+    };
 
-//     let isGroupOwner = false;
-//     if (groupRef.Owner == auth.currentUser.uid) isGroupOwner = true;
+    let isGroupOwner = false;
+    if (groupRef.Owner == auth.currentUser.uid) isGroupOwner = true;
 
-//     return {
-//         user: currentUser.toJSON(),
-//         group,
-//         isGroupOwner
-//     }
-// };
+    return {
+        user: currentUser.toJSON(),
+        group,
+        isGroupOwner
+    }
+};
 
 
 
 export const actions = {
-    JoinGroup: async ({ request }) => {
+    joinGroup: async ({ request }) => {
         const data = await request.formData(),
             GroupID = data.get('GroupID'),
-            UserID = data.get('UserID'),
-            UserDisplayName = data.get('UserDisplayName'),
-            UserPhotoURL = data.get('UserPhotoURL'),
-            SecretCode = data.get('SecretCode'),
+            SecretCode = data.get('SecretCode') || "",
             Wishlist = data.get('Wishlist');
         
-        if (!GroupID || !UserID || !UserDisplayName || !UserPhotoURL || !SecretCode || !Wishlist) return invalid(400, { error: "Form invalid" });
+        // if (!SecretCode) return invalid(400, { SecretCode: { empty: true } });
 
         const groupRef = doc(db, "groups", GroupID),
             groupSnap = await getDoc(groupRef);
@@ -62,12 +62,13 @@ export const actions = {
 
         if (SecretCode == group.SecretCode) {
             group.Members.push({
-                uid: UserID,
-                displayName: UserDisplayName,
-                photoURL: UserPhotoURL,
+                uid: auth.currentUser.uid,
+                displayName: auth.currentUser.displayName,
+                photoURL: auth.currentUser.photoURL,
                 wishlist: Wishlist
             });
-            await setDoc(doc(db, "groups", GroupID), group);
+            await setDoc(doc(db, "groups", groupSnap.id), group);
+            // console.log(group.SecretCode, SecretCode);
             return { success: true };
         } else return invalid(400, { SecretCode: { invalid: true } });
     },
@@ -148,6 +149,6 @@ export const actions = {
             return { success: false };
         })
 
-        return { success: true, Wishlist };
+        return { success: true };
     }
 };
