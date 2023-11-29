@@ -33,7 +33,7 @@
 
 <Header title={"Log In"} />
 
-<div class="Page PageWithHeader">
+<div class="Page PageWithHeader PageWithFooter">
 	<div class="PageContent">
 		<div class="Centered">
 			<button class="Button ButtonLarge" on:click={loginWithGoogle}>Log In With Google</button>

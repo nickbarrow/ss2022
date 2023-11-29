@@ -16,6 +16,7 @@
     <div class="PageContent">
         <h3 class="PageContentHeader">Group Details:</h3>
         <form id="CreateGroupForm" class="CardSection CreateGroupForm" method="post" autocomplete="off" use:enhance>
+			<!-- <input type="hidden" name="UserID" value="{user.uid}" /> -->
 			<div class="FormRow">
 				<div class="FormField">
 					<label for="GroupNameInput" class="FormLabel">Name:</label>
@@ -40,10 +41,16 @@
 			</div>
 	
 			<div class="FormButtons">
-				<button class="Button" type="submit">Submit</button>
+				<button class="Button CreateSubmitButton" type="submit">Create</button>
 			</div>
 		</form>
     </div>
 
     <PageFooter />
 </div>
+
+<style>
+	.CreateSubmitButton {
+		min-width: 150px;
+	}
+</style>

@@ -96,7 +96,7 @@
     <!-- End-of-list Menu -->
     <div class="PageSection">
         <div class="PageSectionInner">
-            <!-- <a href="/groups/create" class="Button ButtonFullWidth IconButton CreateGroupButton">
+            <a href="/groups/create" class="Button ButtonFullWidth IconButton CreateGroupButton">
                 <svg class="ButtonIcon" version="1.1" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
                     <g>
                         <path d="m797.4 553.56h-150.96v-150.96c0-25.68-20.762-46.441-46.441-46.441s-46.441 20.762-46.441 46.441v150.96l-150.96-0.003906c-25.68 0-46.441 20.762-46.441 46.441s20.762 46.441 46.441 46.441h150.96v150.96c0 25.68 20.762 46.441 46.441 46.441 25.68 0 46.441-20.762 46.441-46.441l-0.003906-150.96h150.96c25.68 0 46.441-20.762 46.441-46.441-0.003906-25.68-20.883-46.441-46.445-46.441z"/>
@@ -104,7 +104,7 @@
                     </g>
                 </svg>                          
                 <span>Create a New Group</span>
-            </a> -->
+            </a>
 
             <a href="/logout" class="Button ButtonSecondary ButtonFullWidth IconButton">
                 <svg class="ButtonIcon" width="1200pt" height="1200pt" version="1.1" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">

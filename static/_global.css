@@ -93,21 +93,30 @@ App Layout
 
 
 
-/*
-Page
-*/
 .Page {
     background-color: #FFFFFF;
     border-top-left-radius: 25px;
     border-top-right-radius: 25px;
     max-width: var(--MaxWidth);
     margin: 0 auto;
-    overflow-y: scroll;
-    padding: 12px;
+    padding: 12px 12px 64px;
     position: relative;
 }
+
 .Page.PageWithHeader {
     min-height: calc(100vh - var(--HeaderHeight));
+}
+
+.Page.WithFooter::after {
+    color: rgba(0, 0, 0, 0.75);
+    content: 'Made with 🌽 in Fort Wayne';
+    font-family: var(--SecondaryFont);
+    font-size: 12px;
+    font-weight: 300;
+    bottom: 80px;
+    left: 50%;
+    position: absolute;
+    transform: translateX(-50%);
 }
 
 .PageContent {
@@ -126,6 +135,7 @@ Page
 .PageSection {
     border-bottom: 1px solid #EAEDF1;
 }
+
 .PageSection:last-child {
     border: none;
 }
@@ -143,10 +153,6 @@ Page
 }
 
 
-
-/*
-Forms
-*/
 .FormRow {
     display: flex;
     flex-direction: row;
@@ -164,9 +170,11 @@ Forms
     position: relative;
     margin-right: 12px;
 }
+
 .FormField:last-child {
     margin: 0;
 }
+
 .FormField:only-child {
     width: 100%;
 }
@@ -277,6 +285,7 @@ Buttons
 }
 
 .ButtonLarge {
+    border-radius: 15px;
     font-size: 22px;
     padding: 15px 20px;
 }
@@ -296,12 +305,15 @@ Buttons
 }
 
 .Button.IconButton .ButtonIcon {
+    fill: #FFFFFF;
     width: 20px;
     height: 20px;
+}
+.Button.IconButton .ButtonIcon:first-child {
     margin-right: 10px;
 }
-.Button.IconButton .ButtonIcon {
-    fill: #FFFFFF;
+.Button.IconButton .ButtonIcon:last-child {
+    margin-left: 12px;
 }
 
 
