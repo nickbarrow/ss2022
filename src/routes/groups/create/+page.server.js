@@ -1,4 +1,4 @@
-import { redirect, invalid } from "@sveltejs/kit";
+import { redirect, fail } from "@sveltejs/kit";
 import { auth, groupsRef, db } from "../../../lib/server/firebase";
 import { collection, query, where, addDoc, getCountFromServer } from "firebase/firestore";
 
@@ -9,7 +9,7 @@ export const actions = {
             SecretCode = data.get('SecretCode'),
             Wishlist = data.get('Wishlist');
 
-        if (!GroupName) return invalid(400, { GroupName: { empty: true } });
+        if (!GroupName) return fail(400, { GroupName: { empty: true } });
 
         // Check if group name exists already
         const nameCheckQuery = query(groupsRef, where('Name', '==', GroupName)),
@@ -17,7 +17,7 @@ export const actions = {
             nameCheckCount = nameCheckSnapshot.data().count;
 
         if (nameCheckCount != 0) {
-            return invalid(400, { GroupName: { taken: true } });
+            return fail(400, { GroupName: { taken: true } });
         }
         
         const groupRef = await addDoc(collection(db, "groups"), {

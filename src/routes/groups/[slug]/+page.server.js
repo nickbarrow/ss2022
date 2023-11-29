@@ -1,4 +1,4 @@
-import { redirect, invalid, error } from "@sveltejs/kit";
+import { redirect, fail, error } from "@sveltejs/kit";
 import { auth, currentUser, db, usersRef } from "../../../lib/server/firebase";
 import { doc, getDoc, getDocs, setDoc, query, where, updateDoc } from "firebase/firestore";
 
@@ -49,16 +49,16 @@ export const actions = {
             SecretCode = data.get('SecretCode'),
             Wishlist = data.get('Wishlist');
         
-        if (!GroupID || !UserID || !UserDisplayName || !UserPhotoURL || !SecretCode || !Wishlist) return invalid(400, { error: "Form invalid" });
+        if (!GroupID || !UserID || !UserDisplayName || !UserPhotoURL || !SecretCode || !Wishlist) return fail(400, { error: "Form invalid" });
 
         const groupRef = doc(db, "groups", GroupID),
             groupSnap = await getDoc(groupRef);
 
-        if (!groupSnap.exists()) return invalid(404);
+        if (!groupSnap.exists()) return fail(404);
 
         var group = groupSnap.data();
         if (group.SecretCode && group.SecretCode !== "" && !SecretCode)
-            return invalid(400, { SecretCode: { invalid: true } });
+            return fail(400, { SecretCode: { invalid: true } });
 
         if (SecretCode == group.SecretCode) {
             group.Members.push({
@@ -69,7 +69,7 @@ export const actions = {
             });
             await setDoc(doc(db, "groups", GroupID), group);
             return { success: true };
-        } else return invalid(400, { SecretCode: { invalid: true } });
+        } else return fail(400, { SecretCode: { invalid: true } });
     },
     GenerateMatches: async ({ request }) => {
         const data = await request.formData(),

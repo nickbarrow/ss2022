@@ -1,4 +1,4 @@
-import { invalid, redirect } from "@sveltejs/kit";
+import { fail, redirect } from "@sveltejs/kit";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "$lib/server/firebase";
 
@@ -12,16 +12,16 @@ export const actions = {
             SecretCode = data.get('SecretCode') || "",
             Wishlist = data.get('Wishlist');
         
-        if (!GroupID || !UserID || !UserDisplayName || !UserPhotoURL) return invalid(400, { error: "Form invalid" });
+        if (!GroupID || !UserID || !UserDisplayName || !UserPhotoURL) return fail(400, { error: "Form invalid" });
 
         const groupRef = doc(db, "groups", GroupID),
             groupSnap = await getDoc(groupRef);
 
-        if (!groupSnap.exists()) return invalid(404);
+        if (!groupSnap.exists()) return fail(404);
 
         var group = groupSnap.data();
         if (group.SecretCode && group.SecretCode !== "" && !SecretCode)
-            return invalid(400, { SecretCode: { empty: true } });
+            return fail(400, { SecretCode: { empty: true } });
 
         if (SecretCode == group.SecretCode) {
             group.Members.push({
@@ -33,6 +33,6 @@ export const actions = {
             await setDoc(doc(db, "groups", GroupID), group)
                 .catch(err => { return { success: false, error: err } });
             throw redirect(300, `/groups/${GroupID}`);
-        } else return invalid(400, { SecretCode: { invalid: true } });
+        } else return fail(400, { SecretCode: { invalid: true } });
     }
 };
