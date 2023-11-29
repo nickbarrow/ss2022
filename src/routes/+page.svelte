@@ -13,7 +13,7 @@
         <div class="HeroContent">
             <img src="VintageSanta.jpg" alt="Vintage Santa Claus" class="HeroImage" />
             
-            <h1 class="HeroTitle">Secret Santa 2022</h1>
+            <h1 class="HeroTitle">Secret Santa 2023</h1>
             
             <div class="HeroButtons">
                 <a class="Button ButtonLarge IconButton" href="/login">
